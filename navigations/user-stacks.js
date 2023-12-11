@@ -9,6 +9,8 @@ import AmbulanceScreen from '../Screens/AmbulanceScreen';
 import EdhiHomes from '../Screens/EdhiHomes';
 import ChildCareScreen from '../Screens/ChildCareScreen';
 import OldHomesScreen from '../Screens/OldHomesScreen';
+import ChildAdmissionForm from '../Screens/ChildAdmissionForm';
+import ChildAdoptionForm from '../Screens/ChildAdoptionForm';
 //Screen Stacks
 
 //Account management
@@ -23,6 +25,8 @@ export const HomeStack = () => {
             <Stack.Screen name="EdhiHomes" component={EdhiHomes} />
             <Stack.Screen name="ChildCareScreen" component={ChildCareScreen} />
             <Stack.Screen name="OldHomesScreen" component={OldHomesScreen} />
+            <Stack.Screen name="ChildAdmissionForm" component={ChildAdmissionForm} />
+            <Stack.Screen name="ChildAdoptionForm" component={ChildAdoptionForm} />
         </Stack.Navigator>
     )
 }
@@ -31,7 +35,7 @@ export const VolunteerStack = () => {
     const Stack = createNativeStackNavigator();
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="home" component={HomeScreen} />
+            {/* <Stack.Screen name="home" component={HomeScreen} /> */}
             <Stack.Screen name="volunteer" component={VolunteerScreen} />
         </Stack.Navigator>
     )

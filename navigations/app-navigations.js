@@ -49,11 +49,11 @@ const AppNavigation = () => {
         headerShown: true,
         headerTitleAlign: 'center',
         headerTitle: 'Edhi Foundation',
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-            <MaterialIcons name="menu" size={24} color="black" style={{ marginLeft: 10 }} />
-          </TouchableOpacity>
-        ),
+        // headerLeft: () => (
+        //   <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+        //     <MaterialIcons name="menu" size={24} color="black" style={{ marginLeft: 10 }} />
+        //   </TouchableOpacity>
+        // ),
         tabBarActiveTintColor: "#ffc400",
         tabBarShowLabel: false,
         tabBarInactiveTintColor: "gray",
