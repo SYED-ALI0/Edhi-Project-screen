@@ -3,26 +3,58 @@ import React, { useContext, useState } from 'react'
 import { AuthThemeProvider } from '../../components/Theme/ThemeProvider';
 import { TouchableOpacity } from "react-native";
 
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+
+import { auth, db, app } from '../../components/firebase'
+import { collection, addDoc, setDoc, getDocs, doc } from "firebase/firestore";
+
 const ForgotPassword = ({ navigation }) => {
 
     const [email, setEmail] = useState('');
     const [err, setError] = useState(null);
     const [error, setErrorr] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [resetEmailSent, setResetEmailSent] = useState(false);
+    const [errorr, set_Errorr] = useState(null);
 
-    const handleForgotPassword = () => {
+    // const [isLoading, setIsLoading] = useState(true);
+
+    const handleForgotPassword = async () => {
+        setIsLoading(true);
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
         if (!email) {
-            setError('Please ENter Email Address');
+            setError('Please Enter Email Address');
+            setIsLoading(false);
             return;
         }
 
         if (!emailRegex.test(email)) {
             setError("Invalid email");
+            setIsLoading(false);
             return;
         }
 
-        setIsLoading(true);
+        // setIsLoading(true);
+        setIsLoading(false)
+
+        try {
+            sendPasswordResetEmail(auth, email)
+            .then(() => {
+                // Password reset email sent!
+                alert("Email Sent on the email address.")
+                // ..
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // ..
+            });
+          } catch (error) {
+            setError(error.message);
+            setResetEmailSent(false);
+          }
+      
+
         
     }
 
@@ -38,7 +70,7 @@ const ForgotPassword = ({ navigation }) => {
                         <PresenceTransition
                             visible={true}
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { duration: 2000 } }}
+                            animate={{ opacity: 1, transition: { duration: 20 } }}
                         >
                             <VStack space={3} mt="5">
 

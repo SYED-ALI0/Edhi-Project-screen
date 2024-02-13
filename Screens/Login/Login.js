@@ -25,7 +25,7 @@ const Login = ({ navigation }) => {
 
         const unsubscribe =  auth.onAuthStateChanged(user => {
             if(user){
-                navigation.navigate("Home")
+                navigation.navigate("HomeStack")
             }
         })
 
@@ -106,7 +106,7 @@ const Login = ({ navigation }) => {
                             <PresenceTransition
                                 visible={true}
                                 initial={{ opacity: 0 }}
-                                animate={{ opacity: 1, transition: { duration: 3000 } }}
+                                animate={{ opacity: 1, transition: { duration: 30 } }}
                             >
                                 <VStack space={3} mt="5">
                                     <FormControl>

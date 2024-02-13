@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Button, TextInput, Alert, Text, StyleSheet, ScrollView } from 'react-native';
 import { collection, addDoc } from 'firebase/firestore';
+import {Select} from "native-base"
 import { db } from '../components/firebase';
-import { Picker } from '@react-native-picker/picker';
+// import { Picker } from '@react-native-picker/picker';
 
 const cities = [
   'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad',
@@ -143,17 +144,13 @@ const ChildAdmissionForm = () => {
       {ageError ? <Text style={styles.errorText}>{ageError}</Text> : null}
 
       <Text style={styles.label}>Gender</Text>
-      <Picker
-        selectedValue={child.gender}
-        onValueChange={(itemValue) => setChild({ ...child, gender: itemValue })}
-        style={{ ...styles.textBoxes, color: 'black' }}
-        itemStyle={{ color: 'black' }}
-      >
-        <Picker.Item label='Select Gender' value='' />
-        <Picker.Item label='Male' value='Male' />
-        <Picker.Item label='Female' value='Female' />
-        <Picker.Item label='Other' value='Other' />
-      </Picker>
+    
+
+      <Select selectedValue={child.gender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Gender"  mt={1} onValueChange={itemValue =>  setChild({ ...child, gender: itemValue })}>
+          <Select.Item label="Male" value="female" />
+          <Select.Item label="Female" value="male" />
+          <Select.Item label="Other" value="other" />
+        </Select>
 
       <Text style={styles.label}>Parent's Full Name</Text>
       <TextInput
@@ -211,6 +208,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 4,
+    
   },
   textBoxes: {
     width: '80%',

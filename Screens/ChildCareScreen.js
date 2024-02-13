@@ -10,13 +10,13 @@ const ChildCareScreen = ({ navigation }) => {
         </View>
 
         <ScrollView horizontal style={styles.imageScrollContainer}>
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
+          <Image source={require('../images/child1.jpeg')} style={styles.image} />
+          <Image source={require('../images/child2.jpeg')} style={styles.image} />
+          <Image source={require('../images/child3.jpg')} style={styles.image} />
+          <Image source={require('../images/child4.jpeg')} style={styles.image} />
+          <Image source={require('../images/child5.jpeg')} style={styles.image} />
+          {/* <Image source={require('../images/image1.jpeg')} style={styles.image} />
+          <Image source={require('../images/image1.jpeg')} style={styles.image} /> */}
           {/* Add more images as needed */}
         </ScrollView>
 

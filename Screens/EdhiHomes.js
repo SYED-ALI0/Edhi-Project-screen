@@ -1,21 +1,29 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 const EdhiHomes = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.button}
+        style={styles.card}
         onPress={() => navigation.navigate('OldHomesScreen')}
       >
-        <Text style={styles.buttonText}>Old Homes</Text>
+        <Image
+          source={require('../images/oldhome.jpg')} 
+          style={styles.cardImage}
+        />
+        <Text style={styles.cardText}>Old Homes</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.button}
+        style={styles.card}
         onPress={() => navigation.navigate('ChildCareScreen')}
       >
-        <Text style={styles.buttonText}>Child Care</Text>
+        <Image
+          source={require('../images/child.jpg')} 
+          style={styles.cardImage}
+        />
+        <Text style={styles.cardText}>Child Care</Text>
       </TouchableOpacity>
     </View>
   );
@@ -24,18 +32,28 @@ const EdhiHomes = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
+    padding: 16,
   },
-  button: {
-    backgroundColor: '#3498db',
-    padding: 15,
-    margin: 10,
-    borderRadius: 5,
+  card: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    elevation: 3,
+    alignItems: 'center',
+    width: '40%', 
   },
-  buttonText: {
-    color: '#fff',
+  cardImage: {
+    width: 100, 
+    height: 100, 
+    borderRadius: 25,
+    marginBottom: 16,
+  },
+  cardText: {
     fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

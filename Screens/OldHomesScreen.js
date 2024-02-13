@@ -10,13 +10,13 @@ const OldHomesScreen = ({ navigation }) => {
         </View>
 
         <ScrollView horizontal style={styles.imageScrollContainer}>
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} />
+          <Image source={require('../images/old1.jpeg')} style={styles.image} />
+          <Image source={require('../images/old2.jpeg')} style={styles.image} />
+          <Image source={require('../images/old3.jpeg')} style={styles.image} />
+          <Image source={require('../images/old4.jpeg')} style={styles.image} />
+          <Image source={require('../images/old5.jpeg')} style={styles.image} />
+          {/* <Image source={require('../images/image1.jpeg')} style={styles.image} />
+          <Image source={require('../images/image1.jpeg')} style={styles.image} /> */}
           {/* Add more images as needed */}
         </ScrollView>
 

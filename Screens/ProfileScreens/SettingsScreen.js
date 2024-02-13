@@ -1,10 +1,10 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React,  { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLORS, FONTS } from "../../constants/constants";
+// import { COLORS, FONTS } from "../../constants/constants";
 import { MaterialIcons } from "@expo/vector-icons";
 import { signOut } from 'firebase/auth'
-import { db, auth } from '../../Firebase/firebase.config'
+import { db, auth } from '../../components/firebase';
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 
 
@@ -19,7 +19,7 @@ const SettingsScreen = ({ navigation, route }) => {
         headerTitleStyle: { fontWeight: "bold", },
         headerLeft : () => (
             <TouchableOpacity onPress={() => navigation.goBack()}  >
-                <MaterialIcons name="keyboard-arrow-left" size={24} color={COLORS.black} />
+                <MaterialIcons name="keyboard-arrow-left" size={24}  />
             </TouchableOpacity>
         ),
     });
@@ -209,14 +209,14 @@ const SettingsScreen = ({ navigation, route }) => {
             alignItems: "center",
             paddingVertical: 8,
             paddingLeft: 12,
-            backgroundColor: COLORS.gray,
+            // backgroundColor: COLORS.gray,
         }}
         >
-        <MaterialIcons name={icon} size={24} color="black" />
+        <MaterialIcons name={icon} size={24}  />
         <Text
             style={{
             marginLeft: 36,
-            ...FONTS.semiBold,
+            // ...FONTS.semiBold,
             fontWeight: 600,
             fontSize: 16,
             }}
@@ -230,7 +230,7 @@ const SettingsScreen = ({ navigation, route }) => {
         <SafeAreaView
         style={{
             flex: 1,
-            backgroundColor: COLORS.white,
+            // backgroundColor: COLORS.white,
         }}
         >
 
@@ -238,11 +238,11 @@ const SettingsScreen = ({ navigation, route }) => {
             {/* Account Settings */}
             <View style={{ marginBottom: 12 }}>
             {/* <Text style={{ ...FONTS.h4, marginVertical: 10 }}>Account</Text> */}
-            <Text style={{ ...FONTS.h4, marginVertical: 1 }}>Account</Text>
+            <Text >Account</Text>
             <View
                 style={{
                 borderRadius: 12,
-                backgrounColor: COLORS.gray,
+                // backgrounColor: COLORS.gray,
                 }}
             >
                 {accountItems.map((item, index) => (
@@ -256,13 +256,13 @@ const SettingsScreen = ({ navigation, route }) => {
             {/* Support and About settings */}
 
             <View style={{ marginBottom: 12 }}>
-            <Text style={{ ...FONTS.h4, marginVertical: 10 }}>
+            <Text >
                 Support & About{" "}
             </Text>
             <View
                 style={{
                 borderRadius: 12,
-                backgrounColor: COLORS.gray,
+                // backgrounColor: COLORS.gray,
                 }}
             >
                 {supportItems.map((item, index) => (
@@ -275,13 +275,13 @@ const SettingsScreen = ({ navigation, route }) => {
 
             {/* Cache & Cellular */}
             <View style={{ marginBottom: 12 }}>
-            <Text style={{ ...FONTS.h4, marginVertical: 10 }}>
+            <Text >
                 Cache & Cellular{" "}
             </Text>
             <View
                 style={{
                 borderRadius: 12,
-                backgrounColor: COLORS.gray,
+                // backgrounColor: COLORS.gray,
                 }}
             >
                 {cacheAndCellularItems.map((item, index) => (
@@ -295,11 +295,11 @@ const SettingsScreen = ({ navigation, route }) => {
             {/* Actions Settings */}
 
             <View style={{ marginBottom: 12 }}>
-            <Text style={{ ...FONTS.h4, marginVertical: 10 }}>Actions</Text>
+            <Text >Actions</Text>
             <View
                 style={{
                 borderRadius: 12,
-                backgrounColor: COLORS.gray,
+                // backgrounColor: COLORS.gray,
                 }}
             >
                 {actionsItems.map((item, index) => (
