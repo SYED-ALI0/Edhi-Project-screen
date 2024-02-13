@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Button, TextInput, Alert, Text, StyleSheet, ScrollView } from 'react-native';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
+import {Select} from "native-base"
+
 import { Picker } from '@react-native-picker/picker';
 
 const OldHomeAdmissionForm = () => {
@@ -202,31 +204,21 @@ const OldHomeAdmissionForm = () => {
       {ageError ? <Text style={styles.errorText}>{ageError}</Text> : null}
 
       <Text style={styles.label}>Gender</Text>
-      <Picker
-        selectedValue={admission.applicantGender}
-        onValueChange={(itemValue) => setAdmission({ ...admission, applicantGender: itemValue })}
-        style={{ ...styles.textBoxes, color: 'black' }}
-        itemStyle={{ color: 'black' }}
-      >
-        <Picker.Item label="Select Gender" value="" />
-        <Picker.Item label="Male" value="Male" />
-        <Picker.Item label="Female" value="Female" />
-        <Picker.Item label="Other" value="Other" />
-      </Picker>
+            
+      <Select selectedValue={admission.applicantGender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Select Gender"  mt={1} onValueChange={itemValue =>  setAdmission({ ...admission, applicantGender: itemValue })}>
+          <Select.Item label="Male" value="Male" />
+          <Select.Item label="Female" value="Female"  />
+          <Select.Item label="Other" value="Other" />
+        </Select>
 
       <Text style={styles.label}>Marital Status</Text>
-      <Picker
-        selectedValue={admission.maritalStatus}
-        onValueChange={(itemValue) => setAdmission({ ...admission, maritalStatus: itemValue })}
-        style={{ ...styles.textBoxes, color: 'black' }}
-        itemStyle={{ color: 'black' }}
-      >
-        <Picker.Item label='Select Marital Status' value='' />
-        <Picker.Item label='Single' value='Single' />
-        <Picker.Item label='Married' value='Married' />
-        <Picker.Item label='Divorced' value='Divorced' />
-        <Picker.Item label='Widowed' value='Widowed' />
-      </Picker>
+     
+      <Select selectedValue={admission.maritalStatus} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Marital Status"  mt={1} onValueChange={itemValue =>  setAdmission({ ...admission, maritalStatus: itemValue })}>
+          <Select.Item label="Single" value="Single" />
+          <Select.Item label="Married" value="Marred" />
+          <Select.Item label="Divorced" value="Divorced" />
+          <Select.Item label="Widowed" value="Widowed" />
+        </Select>
 
       <Text style={styles.label}>Occupation</Text>
       <TextInput
@@ -308,17 +300,15 @@ const OldHomeAdmissionForm = () => {
       />
 
       <Text style={styles.label}>Any Allergies?</Text>
-      <Picker
-        selectedValue={admission.anyAllergies}
-        onValueChange={(itemValue) => setAdmission({ ...admission, anyAllergies: itemValue })}
-        style={{ ...styles.textBoxes, color: 'black' }}
-        itemStyle={{ color: 'black' }}
-      >
-        <Picker.Item label='No' value='No' />
-        <Picker.Item label='Yes' value='Yes' />
-      </Picker>
+    
 
-      {admission.anyAllergies === 'Yes' && (
+      <Select selectedValue={admission.anyAllergies} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Option"  mt={1} onValueChange={itemValue =>  setAdmission({ ...admission, anyAllergies: itemValue })}>
+          <Select.Item label="Yes" value="Yes" />
+          <Select.Item label="No" value="No" />
+       
+        </Select>
+
+      {admission.anyAllergies === "Yes" && (
         <>
           <Text style={styles.label}>Details of Allergies</Text>
           <TextInput

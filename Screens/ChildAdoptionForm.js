@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { View, Button, TextInput, Alert, Text, StyleSheet, ScrollView } from 'react-native';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
-import { Picker } from '@react-native-picker/picker';
+import {Select} from "native-base"
+
+//  import { Picker } from '@react-native-picker/picker';
 
 const ChildAdoptionForm = () => {
   const [adoption, setAdoption] = useState({
@@ -201,31 +203,25 @@ const ChildAdoptionForm = () => {
       {ageError ? <Text style={styles.errorText}>{ageError}</Text> : null}
 
       <Text style={styles.label}>Gender</Text>
-      <Picker
-        selectedValue={adoption.adopterGender}
-        onValueChange={(itemValue) => setAdoption({ ...adoption, adopterGender: itemValue })}
-        style={{ ...styles.textBoxes, color: 'black' }}
-        itemStyle={{ color: 'black' }}
-      >
-        <Picker.Item label="Select Gender" value="" />
-        <Picker.Item label="Male" value="Male" />
-        <Picker.Item label="Female" value="Female" />
-        <Picker.Item label="Other" value="Other" />
-      </Picker>
+    
 
-      <Text style={styles.label}>Marital Status</Text>
-      <Picker
-        selectedValue={adoption.maritalStatus}
-        onValueChange={(itemValue) => setAdoption({ ...adoption, maritalStatus: itemValue })}
-        style={{ ...styles.textBoxes, color: 'black' }}
-        itemStyle={{ color: 'black' }}
-      >
-        <Picker.Item label='Select Marital Status' value='' />
-        <Picker.Item label='Single' value='Single' />
-        <Picker.Item label='Married' value='Married' />
-        <Picker.Item label='Divorced' value='Divorced' />
-        <Picker.Item label='Widowed' value='Widowed' />
-      </Picker>
+      <Select selectedValue={adoption.gender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Gender"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, gender: itemValue })}>
+          <Select.Item label="Male" value="female" />
+          <Select.Item label="Female" value="male" />
+          <Select.Item label="Other" value="other" />
+        </Select>
+
+        <Text style={styles.label}>Marital Status</Text>
+    
+
+      <Select selectedValue={adoption.maritalStatus} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Marital Status"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, maritalStatus: itemValue })}>
+          <Select.Item label="Single" value="Single" />
+          <Select.Item label="Married" value="Marred" />
+          <Select.Item label="Divorced" value="Divorced" />
+          <Select.Item label="Widowed" value="Widowed" />
+        </Select>
+
+      
 
       <Text style={styles.label}>Occupation</Text>
       <TextInput
@@ -280,17 +276,13 @@ const ChildAdoptionForm = () => {
       {reasonError ? <Text style={styles.errorText}>{reasonError}</Text> : null}
 
       <Text style={styles.label}>Do you have other children?</Text>
-      <Picker
-        selectedValue={adoption.otherChildren}
-        onValueChange={(itemValue) => setAdoption({ ...adoption, otherChildren: itemValue })}
-        style={{ ...styles.textBoxes, color: 'black' }}
-        itemStyle={{ color: 'black' }}
-      >
-        <Picker.Item label='No' value='No' />
-        <Picker.Item label='Yes' value='Yes' />
-      </Picker>
+   
+      <Select selectedValue={adoption.otherChildren} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Option"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, otherChildren: itemValue })}>
+          <Select.Item label="Yes" value="Yes" />
+          <Select.Item label="No" value="No" />
+        </Select>
 
-      {adoption.otherChildren === 'Yes' && (
+      {adoption.otherChildren === "Yes" && (
         <>
           <Text style={styles.label}>Details of Other Children</Text>
           <TextInput
@@ -305,17 +297,15 @@ const ChildAdoptionForm = () => {
       )}
 
       <Text style={styles.label}>Do you have any criminal record?</Text>
-      <Picker
-        selectedValue={adoption.criminalRecord}
-        onValueChange={(itemValue) => setAdoption({ ...adoption, criminalRecord: itemValue })}
-        style={{ ...styles.textBoxes, color: 'black' }}
-        itemStyle={{ color: 'black' }}
-      >
-        <Picker.Item label='No' value='No' />
-        <Picker.Item label='Yes' value='Yes' />
-      </Picker>
+      
 
-      {adoption.criminalRecord === 'Yes' && (
+      <Select selectedValue={adoption.criminalRecord} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Option"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, criminalRecord: itemValue })}>
+          <Select.Item label="Yes" value="Yes" />
+          <Select.Item label="No" value="No" />
+        </Select>
+
+
+      {adoption.criminalRecord === "Yes" && (
         <>
           <Text style={styles.label}>Details of Criminal Record</Text>
           <TextInput

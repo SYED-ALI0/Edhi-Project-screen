@@ -147,8 +147,8 @@ const ChildAdmissionForm = () => {
     
 
       <Select selectedValue={child.gender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Gender"  mt={1} onValueChange={itemValue =>  setChild({ ...child, gender: itemValue })}>
-          <Select.Item label="Male" value="female" />
-          <Select.Item label="Female" value="male" />
+          <Select.Item label="Male" value="male" />
+          <Select.Item label="Female" value="female" />
           <Select.Item label="Other" value="other" />
         </Select>
 

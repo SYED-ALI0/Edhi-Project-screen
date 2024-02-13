@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Button, TextInput, Alert, Text, ScrollView } from 'react-native';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../components/firebase';
+import {Select} from "native-base"
+
 import { Picker } from '@react-native-picker/picker';
 
 const cities = [
@@ -205,17 +207,13 @@ const VolunteerScreen = ({ navigation }) => {
 
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Gender</Text>
-        <Picker
-          selectedValue={user.userGender}
-          onValueChange={(itemValue) => setUser({ ...user, userGender: itemValue })}
-          style={styles.textBoxes}
-          itemStyle={{ color: 'black' }}
-        >
-          <Picker.Item label="Select Gender" value="Select Gender" />
-          <Picker.Item label="Male" value="Male" />
-          <Picker.Item label="Female" value="Female" />
-          <Picker.Item label="Other" value="Other" />
-        </Picker>
+        
+
+        <Select selectedValue={user.userGender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Select Gender"  mt={1} onValueChange={itemValue =>  setUser({ ...user, userGender: itemValue })}>
+          <Select.Item label="Male" value="Male" />
+          <Select.Item label="Female" value="Female"  />
+          <Select.Item label="Other" value="Other" />
+        </Select>
         {genderError ? <Text style={styles.errorText}>{genderError}</Text> : null}
       </View>
 
@@ -234,16 +232,12 @@ const VolunteerScreen = ({ navigation }) => {
 
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Location</Text>
-        <Picker
-          selectedValue={user.userLocation}
-          onValueChange={(itemValue) => setUser({ ...user, userLocation: itemValue })}
-          style={styles.textBoxes}
-          itemStyle={{ color: 'black' }}
-        >
-          {cities.map((city, index) => (
+        
+        <Select selectedValue={user.userLocation} minWidth="200" accessibilityLabel="Choose Service" placeholder="Select Location"  mt={1} onValueChange={itemValue =>  setUser({ ...user, userLocation: itemValue })}>
+        {cities.map((city, index) => (
             <Picker.Item key={index} label={city} value={city} />
           ))}
-        </Picker>
+        </Select>
         {locationError ? <Text style={styles.errorText}>{locationError}</Text> : null}
       </View>
 
@@ -252,7 +246,7 @@ const VolunteerScreen = ({ navigation }) => {
         <TextInput
           value={user.userAvailability}
           onChangeText={(text) => setUser({ ...user, userAvailability: text })}
-          placeholder="Enter your availability"
+          placeholder="Enter the time you are available at"
           style={styles.textBoxes}
           onBlur={() => setAvailabilityError(user.userAvailability.trim() === '' ? 'Please enter your availability.' : '')}
         />
