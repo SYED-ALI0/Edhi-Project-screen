@@ -3,33 +3,14 @@ import { StyleSheet, View, Button, Alert, Linking, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-
-// Function to calculate distance between two points using Haversine formula
-const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Radius of the earth in km
-  const dLat = deg2rad(lat2 - lat1);
-  const dLon = deg2rad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distance in km
-  return distance;
-};
-
-// Function to convert degrees to radians
-const deg2rad = (deg) => {
-  return deg * (Math.PI / 180);
-};
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../components/firebase';
 
 export default function AmbulanceScreen() {
   const [location, setLocation] = useState(null);
   const [emergencyRequested, setEmergencyRequested] = useState(false);
   const [locationPermissionDenied, setLocationPermissionDenied] = useState(false);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
-  const [ambulanceArrivalTime, setAmbulanceArrivalTime] = useState(null);
-  const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
     const getPermissions = async () => {
@@ -53,14 +34,31 @@ export default function AmbulanceScreen() {
     getPermissions();
   }, []);
 
-  // Function to handle emergency request
+  const storeEmergencyRequest = async () => {
+    try {
+      const emergencyRequestsCollection = collection(db, 'emergencyRequests');
+      await addDoc(emergencyRequestsCollection, {
+        userLocation: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+        userInfo: {
+          // You can add more user info here if needed
+          userId: 'USER_ID', // Replace with actual user ID
+        },
+      });
+      console.log('Emergency request stored successfully');
+    } catch (error) {
+      console.error('Error storing emergency request:', error);
+    }
+  };
+
   const handleEmergencyRequest = () => {
     if (locationPermissionDenied) {
       showLocationAccessDeniedAlert();
     } else {
       if (!emergencyRequested) {
         if (locationConfirmed) {
-          // Display confirmation dialog
           Alert.alert(
             "Emergency Assistance",
             "Are you sure you want to request an ambulance?",
@@ -72,21 +70,9 @@ export default function AmbulanceScreen() {
               },
               {
                 text: "Request",
-                onPress: () => {
-                  // Logic to request ambulance
-                  console.log("Ambulance requested");
-                  setEmergencyRequested(true); // Update state to prevent multiple requests
-                  const hospitalLocation = { latitude: 34.2193, longitude: 73.2394 }; // Example hospital location
-                  const distance = calculateDistance(
-                    location.coords.latitude,
-                    location.coords.longitude,
-                    hospitalLocation.latitude,
-                    hospitalLocation.longitude
-                  );
-                  const arrivalTime = estimateAmbulanceArrivalTime(distance);
-                  setAmbulanceArrivalTime(arrivalTime); // Update ambulance arrival time
-                  
-                  // Show confirmation alert after ambulance request
+                onPress: async () => {
+                  setEmergencyRequested(true);
+                  await storeEmergencyRequest(); // Store emergency request
                   Alert.alert(
                     "Ambulance Request Confirmed",
                     "An ambulance has been requested. Assistance will arrive soon."
@@ -102,7 +88,6 @@ export default function AmbulanceScreen() {
           );
         }
       } else {
-        // Inform user that emergency request has already been made
         Alert.alert(
           "Emergency Assistance",
           "An ambulance has already been requested."
@@ -111,18 +96,6 @@ export default function AmbulanceScreen() {
     }
   };
 
-  // Function to estimate ambulance arrival time based on distance
-  const estimateAmbulanceArrivalTime = (distance) => {
-    // Average speed of ambulance in km/h
-    const ambulanceSpeed = 60;
-    // Calculate time in hours
-    const timeInHours = distance / ambulanceSpeed;
-    // Convert time to minutes
-    const timeInMinutes = Math.round(timeInHours * 60);
-    return timeInMinutes + " minutes";
-  };
-
-  // Function to show alert when location access is denied
   const showLocationAccessDeniedAlert = () => {
     Alert.alert(
       "Location Access Required",
@@ -135,7 +108,7 @@ export default function AmbulanceScreen() {
         },
         {
           text: "Enable",
-          onPress: () => Linking.openSettings() // Open device settings
+          onPress: () => Linking.openSettings()
         }
       ]
     );
@@ -150,8 +123,8 @@ export default function AmbulanceScreen() {
           initialRegion={{
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-            latitudeDelta: 0.05, // Adjusted to zoom out
-            longitudeDelta: 0.05, // Adjusted to zoom out
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
           }}
         >
           <Marker
@@ -165,7 +138,6 @@ export default function AmbulanceScreen() {
         </MapView>
       )}
 
-      {/* Button to request ambulance */}
       <View style={styles.buttonContainer}>
         <Button
           title="Call Ambulance"
@@ -173,13 +145,6 @@ export default function AmbulanceScreen() {
           disabled={emergencyRequested || locationPermissionDenied || !locationConfirmed}
         />
       </View>
-
-      {/* Display ambulance arrival time */}
-      {emergencyRequested && ambulanceArrivalTime && (
-        <View style={styles.ambulanceArrivalContainer}>
-          <Text>Ambulance Arrival Time: {ambulanceArrivalTime}</Text>
-        </View>
-      )}
     </View>
   );
 }
@@ -197,12 +162,5 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 20,
     right: 20,
-  },
-  ambulanceArrivalContainer: {
-    position: 'absolute',
-    bottom: 100,
-    left: 20,
-    right: 20,
-    alignItems: 'center',
   },
 });
