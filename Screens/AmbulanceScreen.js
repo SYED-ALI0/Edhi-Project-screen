@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Button, Alert, Linking, Text } from 'react-native';
+import { StyleSheet, View, Button, Alert, Linking, TextInput } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -11,6 +11,8 @@ export default function AmbulanceScreen() {
   const [emergencyRequested, setEmergencyRequested] = useState(false);
   const [locationPermissionDenied, setLocationPermissionDenied] = useState(false);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
+  const [contactName, setContactName] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
 
   useEffect(() => {
     const getPermissions = async () => {
@@ -37,14 +39,16 @@ export default function AmbulanceScreen() {
   const storeEmergencyRequest = async () => {
     try {
       const emergencyRequestsCollection = collection(db, 'emergencyRequests');
+      const timestamp = new Date(); // Get current timestamp
       await addDoc(emergencyRequestsCollection, {
         userLocation: {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         },
-        userInfo: {
-          // You can add more user info here if needed
-          userId: 'USER_ID', // Replace with actual user ID
+        requestTime: timestamp, // Store request time
+        emergencyContact: {
+          name: contactName,
+          number: contactNumber,
         },
       });
       console.log('Emergency request stored successfully');
@@ -54,6 +58,22 @@ export default function AmbulanceScreen() {
   };
 
   const handleEmergencyRequest = () => {
+    if (!isValidName(contactName)) {
+      Alert.alert(
+        "Invalid Name",
+        "Please enter a valid name without special characters or numbers."
+      );
+      return;
+    }
+
+    if (!isValidPhoneNumber(contactNumber)) {
+      Alert.alert(
+        "Invalid Number",
+        "Please enter a valid phone number."
+      );
+      return;
+    }
+
     if (locationPermissionDenied) {
       showLocationAccessDeniedAlert();
     } else {
@@ -114,9 +134,36 @@ export default function AmbulanceScreen() {
     );
   };
 
+  const isValidName = (name) => {
+    return /^[a-zA-Z\s]+$/.test(name);
+  };
+
+  const isValidPhoneNumber = (number) => {
+    // Regular expression to match Pakistani phone number pattern
+    const pakistanPhoneNumberPattern = /^(0|\+92)?[0-9]{10}$/;
+    return pakistanPhoneNumberPattern.test(number);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
+
+      <View style={styles.contactContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Emergency Contact Name"
+          onChangeText={setContactName}
+          value={contactName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Emergency Contact Number"
+          onChangeText={setContactNumber}
+          value={contactNumber}
+          keyboardType="phone-pad"
+        />
+      </View>
+
       {location && (
         <MapView
           style={styles.map}
@@ -162,5 +209,16 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 20,
     right: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginHorizontal: 20,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  contactContainer: {
+    marginTop: 20,
   },
 });
