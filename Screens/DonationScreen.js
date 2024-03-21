@@ -77,6 +77,7 @@ export default function DonationScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.card}>
+                <Text>Enter Donation Amount</Text>
                 <TextInput
                     placeholder="Enter Amount"
                     keyboardType="numeric"
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     donateButton: {
-        backgroundColor: '#FF6B6B',
+        backgroundColor: '#4CAF50',
         width: '100%',
         height: 50,
         borderRadius: 10,
