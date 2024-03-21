@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useStripeCheckout } from "./hooks/useStripeCheckout";
-import { auth, db } from '../components/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { auth, db } from '../components/firebase'; // Importing Firebase authentication and Firestore database
+import { doc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore'; // Importing Firestore functions
 
 export default function DonationScreen() {
     const [amount, setAmount] = useState("1");
@@ -14,7 +14,7 @@ export default function DonationScreen() {
     const [donationList, setDonationList] = useState([]);
 
     useEffect(() => {
-        fetchDonationHistory();
+        fetchDonationHistory(); // Fetch donation history when component mounts
     }, []);
 
     const fetchDonationHistory = async () => {
@@ -24,7 +24,7 @@ export default function DonationScreen() {
             const userDocSnapshot = await getDoc(userDocRef);
             const userData = userDocSnapshot.data();
             const existingDonationList = userData?.donations || [];
-            setDonationList(existingDonationList);
+            setDonationList(existingDonationList); // Set donation list state with existing donation data
         } catch (error) {
             console.error('Error fetching donation history: ', error);
         }
@@ -41,14 +41,39 @@ export default function DonationScreen() {
                 amount: amount,
                 date: new Date().toISOString(),
             }];
+    
+            // Calculate total donation amount
+            const totalAmount = updatedDonationList.reduce((total, donation) => total + parseInt(donation.amount), 0);
+    
+            // Update Firestore document with new donation data
             await updateDoc(userDocRef, {
                 donations: updatedDonationList,
             });
-            setDonationList(updatedDonationList);
+    
+            // Check if a document exists in the "TotalDonations" collection
+            const totalDonationsRef = collection(db, "TotalDonations");
+            const totalDonationsQuery = await getDocs(totalDonationsRef);
+            if (!totalDonationsQuery.empty) {
+                // If a document exists, update its amount field
+                const totalDonationDocRef = totalDonationsQuery.docs[0].ref;
+                const totalDonationData = totalDonationsQuery.docs[0].data();
+                const updatedTotalAmount = parseInt(totalDonationData.amount) + parseInt(amount);
+                await updateDoc(totalDonationDocRef, { amount: updatedTotalAmount });
+            } else {
+                // If no document exists, create a new one
+                await addDoc(totalDonationsRef, {
+                    amount: totalAmount,
+                    date: new Date().toISOString(),
+                });
+            }
+    
+            setDonationList(updatedDonationList); // Update donation list state with new donation data
         } catch (error) {
             console.error('Error adding user data: ', error);
         }
     };
+    
+    
 
     const handlePayment = async () => {
         try {
@@ -59,7 +84,7 @@ export default function DonationScreen() {
                 currency: "Rupees",
                 paymentMethodTypes: ["card"],
             });
-            handleDonations();
+            handleDonations(); // Call handleDonations function after successful payment
             console.log(status);
         } catch (error) {
             console.error(error);
@@ -67,17 +92,20 @@ export default function DonationScreen() {
     };
 
     const navigateToFundraisers = () => {
-        navigation.navigate("FundraiserScreen");
+        navigation.navigate("FundraiserScreen"); // Navigate to FundraiserScreen
     };
 
     const toggleHistory = () => {
-        setShowHistory(!showHistory);
+        setShowHistory(!showHistory); // Toggle showHistory state
     };
 
     return (
         <View style={styles.container}>
+            <Text style={styles.heading}>Donate To Edhi Foundation</Text>
+
             <View style={styles.card}>
-                <Text>Enter Donation Amount</Text>
+                <Text style={styles.label}>Enter Donation Amount</Text>
+
                 <TextInput
                     placeholder="Enter Amount"
                     keyboardType="numeric"
@@ -99,23 +127,35 @@ export default function DonationScreen() {
 
             {showHistory && (
                 <FlatList
-                data={donationList.reverse()}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.historyItem}>
-                        <Text style={styles.historyAmount}>Amount: {item.amount}</Text>
-                        <Text style={styles.historyDate}>Date: {new Date(item.date).toLocaleString()}</Text>
-                    </View>
-                )}
-            />
-            
-            
+                    data={donationList.reverse()}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <View style={styles.historyItem}>
+                            <Text style={styles.historyAmount}>Amount: {item.amount}</Text>
+                            <Text style={styles.historyDate}>Date: {new Date(item.date).toLocaleString()}</Text>
+                        </View>
+                    )}
+                />
             )}
         </View>
     );
 }
-
 const styles = StyleSheet.create({
+    heading: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 40,
+        marginTop: 5,
+        color: '#4CAF50', 
+        textAlign: 'centre', 
+    },    
+    label: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: 'black', 
+    },
+    
     container: {
         flex: 1,
         alignItems: 'center',

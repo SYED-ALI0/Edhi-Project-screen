@@ -27,6 +27,15 @@ const Register = () => {
             date: "2017-05-31",
         }
     ]);
+    
+    const [fundraiserList, setFundraiserList] = useState([
+        {
+            title: 'Fundraiser 1',
+            amount: 0,
+            // collectedAmount: 0,
+            date: "2017-05-31",
+        }
+    ]);
 
    
     const [emailError, setEmailError] = useState('');
@@ -99,6 +108,7 @@ const Register = () => {
                 phoneNumber: num,
                 age: age,
                 donations: donationList,
+                fundraisers: fundraiserList,
                
             });
 

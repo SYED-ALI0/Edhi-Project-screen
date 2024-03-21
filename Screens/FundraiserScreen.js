@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
-import { collection, query, getDocs, onSnapshot, doc, updateDoc, Timestamp, arrayUnion } from 'firebase/firestore';
+import { collection, query, getDocs, onSnapshot, doc, updateDoc, Timestamp, arrayUnion, increment } from 'firebase/firestore';
 import { db } from '../components/firebase';
+import { auth } from '../components/firebase';
 
 import { useStripeCheckout } from "./hooks/useStripeCheckout";
 
@@ -33,7 +34,7 @@ const FundraiserScreen = () => {
     setSelectedFundraiserId(fundraiserId);
   };
 
-  const handleConfirmDonation = async (fundraiserTitle) => {
+  const handleConfirmDonation = async (fundraiser) => {
     try {
       if (!donationAmount || parseInt(donationAmount) < 50) {
         alert("The minimum donation amount is Rs.50");
@@ -49,7 +50,7 @@ const FundraiserScreen = () => {
       });
   
       const donationData = {
-        title: fundraiserTitle,
+        title: fundraiser.title,
         amount: parseInt(donationAmount),
         date: Timestamp.now(),
       };
@@ -60,12 +61,17 @@ const FundraiserScreen = () => {
         donations: arrayUnion(donationData)
       });
   
+      // Update collected amount in the fundraiser document
+      const fundraiserDocRef = doc(db, 'fundraisers', fundraiser.id);
+      await updateDoc(fundraiserDocRef, {
+        collectedAmount: increment(parseInt(donationAmount))
+      });
+  
       console.log(status);
     } catch (error) {
       console.error(error);
     }
   };
-  
   
 
   return (
@@ -77,6 +83,7 @@ const FundraiserScreen = () => {
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Title: {item.title}</Text>
             <Text style={styles.cardAmount}>Amount: {item.amount}</Text>
+            <Text style={styles.cardCollectedAmount}>Collected Amount: {item.collectedAmount}</Text>
             {(selectedFundraiserId === item.id) ? (
               <View style={styles.inputContainer}>
                 <TextInput
@@ -88,7 +95,7 @@ const FundraiserScreen = () => {
                 />
                 <TouchableOpacity
                   style={styles.confirmButton}
-                  onPress={() => handleConfirmDonation(item.title)}>
+                  onPress={() => handleConfirmDonation(item)}>
                   <Text style={styles.confirmButtonText}>Confirm Donation</Text>
                 </TouchableOpacity>
               </View>
@@ -138,6 +145,10 @@ const styles = StyleSheet.create({
   },
   cardAmount: {
     fontSize: 16,
+  },
+  cardCollectedAmount: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   donateButton: {
     backgroundColor: '#007bff',
