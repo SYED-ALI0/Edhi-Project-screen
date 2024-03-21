@@ -35,6 +35,11 @@ const FundraiserScreen = () => {
 
   const handleConfirmDonation = async (fundraiserTitle) => {
     try {
+      if (!donationAmount || parseInt(donationAmount) < 50) {
+        alert("The minimum donation amount is Rs.50");
+        return;
+      }
+  
       const status = await initiatePayment({
         userId: "123",
         userName: "Ali",
@@ -42,24 +47,26 @@ const FundraiserScreen = () => {
         currency: "USD",
         paymentMethodTypes: ["card"],
       });
-
+  
       const donationData = {
         title: fundraiserTitle,
         amount: parseInt(donationAmount),
         date: Timestamp.now(),
       };
-
+  
       const userID = auth.currentUser?.email;
       const userDocRef = doc(db, "users", userID);
       await updateDoc(userDocRef, {
         donations: arrayUnion(donationData)
       });
-
+  
       console.log(status);
     } catch (error) {
       console.error(error);
     }
   };
+  
+  
 
   return (
     <View style={styles.container}>

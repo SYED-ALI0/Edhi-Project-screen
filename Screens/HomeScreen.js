@@ -70,32 +70,36 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#ffffff', // Change background color to white
+    paddingHorizontal: 20, // Add horizontal padding for better spacing
   },
   row: {
     flexDirection: 'row',
-    marginBottom: 10,
+    marginBottom: 20,
+    justifyContent: 'center', // Center the rows horizontally
   },
   box: {
     width: 150,
     height: 150,
-    borderRadius: 10,
-    margin: 10,
+    borderRadius: 20, // Increase border radius for smoother corners
+    marginHorizontal: 10, // Adjust horizontal margin
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#4CAF50', // Change background color to a green shade
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.7,
-    shadowRadius: 10,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 5, // Add elevation for Android shadow
   },
   boxText: {
-    fontSize: 18,
+    fontSize: 16, // Decrease font size slightly
     fontWeight: 'bold',
-    color: 'white',
+    color: '#ffffff', // Change text color to white
     textAlign: 'center',
-    margin: 3,
+    textTransform: 'uppercase',
   },
 });
+
+
