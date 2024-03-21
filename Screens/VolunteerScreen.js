@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Button, TextInput, Alert, Text, ScrollView } from 'react-native';
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../components/firebase';
+import { collection, addDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore';
+import { auth, db } from '../components/firebase';
 import {Select} from "native-base"
+import { doc } from 'firebase/firestore';
 
 import { Picker } from '@react-native-picker/picker';
 
@@ -14,10 +15,13 @@ const cities = [
 ];
 
 const VolunteerScreen = ({ navigation }) => {
+
+  const [email, setEmail]  = useState(auth.currentUser?.email);
   const [user, setUser] = useState({
     userName: '',
     userAge: '',
-    userEmail: '',
+    userEmail: email,
+    // userEmail: '',
     userGender: 'Select Gender', // Set an initial value
     userContact: '',
     userLocation: 'Select City', // Set an initial value
@@ -31,6 +35,7 @@ const VolunteerScreen = ({ navigation }) => {
   const [contactError, setContactError] = useState('');
   const [locationError, setLocationError] = useState('');
   const [availabilityError, setAvailabilityError] = useState('');
+
 
   async function checkExistingUser(email, contact) {
     const volunteerRef = collection(db, 'volunteers');

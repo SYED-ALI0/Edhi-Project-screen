@@ -8,9 +8,7 @@ import { auth, db, app } from '../../components/firebase'
 import { collection, addDoc, setDoc, getDocs, doc } from "firebase/firestore";
 
 
-
 const Register = () => {
-
     
     const [fName, setFName] = useState('');
     const [lName, setLName] = useState('');
@@ -23,6 +21,13 @@ const Register = () => {
     const [imageURL, setImageURL] = useState(null);
     
     
+    const [donationList, setDonationList] = useState([
+        {
+            amount: 0,
+            date: "2017-05-31",
+        }
+    ]);
+
    
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
@@ -93,6 +98,7 @@ const Register = () => {
                 email: email,
                 phoneNumber: num,
                 age: age,
+                donations: donationList,
                
             });
 
@@ -131,7 +137,7 @@ const Register = () => {
                         <Text style={{
                             fontSize: 16,
                             color: "black"
-                        }}>Connect to start learning today!</Text>
+                        }}>Welcome to Edhi Foundation Mobile App</Text>
                     </View>
 
                     <View style={{
