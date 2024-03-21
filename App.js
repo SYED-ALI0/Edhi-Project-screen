@@ -5,12 +5,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Navigations from "./navigations";
 import { StripeProvider } from "@stripe/stripe-react-native";
-
+import { LogBox } from "react-native";
 
 export default function App() {  
   const Stack = createNativeStackNavigator();
   const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+   LogBox.ignoreAllLogs();
+  }, []);
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);

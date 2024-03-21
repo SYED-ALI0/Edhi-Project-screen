@@ -49,8 +49,7 @@ export const VolunteerStack = () => {
             {/* <Stack.Screen name="volunteer" component={VolunteerScreen} /> */}
             <Stack.Screen name="userprofile" component={UserProfileScreen} />
             {/* <Stack.Screen name="settingscreen" component={SettingsScreen} /> */}
-
-
+            
 
 
         </Stack.Navigator>

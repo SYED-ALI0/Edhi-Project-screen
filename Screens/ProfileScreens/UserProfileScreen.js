@@ -35,9 +35,9 @@ const UserProfileScreen = ({ navigation }) => {
             const auth = getAuth();
             signOut(auth).then(() => {
             // Sign-out successful.
-                // navigation.replace('login');
-                alert("Logged Out")
-            }).catch((error) => {
+            //  navigation.replace('login');
+                 alert("Logged Out")
+            // }).catch((error) => {
             // An error happened.
             });
     }  

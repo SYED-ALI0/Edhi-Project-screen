@@ -18,6 +18,8 @@ const Navigations = () => {
                 // const [isAuthenticated ] = useState(true);
                 // setIsAuthenticated(false)
                 setIsAuthenticated(true)
+            }else{
+                setIsAuthenticated(false)
             }
         })
     })
