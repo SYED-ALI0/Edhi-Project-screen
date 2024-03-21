@@ -15,6 +15,7 @@ import ChildAdoptionForm from '../Screens/ChildAdoptionForm';
 import TasksScreen from '../Screens/TasksScreen';
 import UserProfileScreen from '../Screens/ProfileScreens/UserProfileScreen'; 
 import SettingsScreen from '../Screens/ProfileScreens/SettingsScreen';
+import FundraiserScreen from '../Screens/FundraiserScreen';
 
 //Screen Stacks
 
@@ -34,6 +35,7 @@ export const HomeStack = () => {
             <Stack.Screen name="OldHomeAdmissionForm" component={OldHomeAdmissionForm} />
             <Stack.Screen name="ChildAdoptionForm" component={ChildAdoptionForm} />
             <Stack.Screen name="TasksScreen" component={TasksScreen} />
+            <Stack.Screen name="FundraiserScreen" component={FundraiserScreen} />
 
         </Stack.Navigator>
     )

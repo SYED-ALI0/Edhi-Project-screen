@@ -7,6 +7,8 @@ import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../components/firebase';
 
 export default function AmbulanceScreen() {
+
+
   const [location, setLocation] = useState(null);
   const [emergencyRequested, setEmergencyRequested] = useState(false);
   const [locationPermissionDenied, setLocationPermissionDenied] = useState(false);
