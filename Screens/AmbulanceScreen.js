@@ -41,13 +41,13 @@ export default function AmbulanceScreen() {
   const storeEmergencyRequest = async () => {
     try {
       const emergencyRequestsCollection = collection(db, 'emergencyRequests');
-      const timestamp = new Date(); // Get current timestamp
+      const timestamp = new Date(); 
       await addDoc(emergencyRequestsCollection, {
         userLocation: {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         },
-        requestTime: timestamp, // Store request time
+        requestTime: timestamp, 
         emergencyContact: {
           name: contactName,
           number: contactNumber,
@@ -94,7 +94,7 @@ export default function AmbulanceScreen() {
                 text: "Request",
                 onPress: async () => {
                   setEmergencyRequested(true);
-                  await storeEmergencyRequest(); // Store emergency request
+                  await storeEmergencyRequest(); 
                   Alert.alert(
                     "Ambulance Request Confirmed",
                     "An ambulance has been requested. Assistance will arrive soon."
@@ -141,7 +141,7 @@ export default function AmbulanceScreen() {
   };
 
   const isValidPhoneNumber = (number) => {
-    // Regular expression to match Pakistani phone number pattern
+    
     const pakistanPhoneNumberPattern = /^(0|\+92)?[0-9]{10}$/;
     return pakistanPhoneNumberPattern.test(number);
   };

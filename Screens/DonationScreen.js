@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useStripeCheckout } from "./hooks/useStripeCheckout";
-import { auth, db } from '../components/firebase'; // Importing Firebase authentication and Firestore database
-import { doc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore'; // Importing Firestore functions
+import { auth, db } from '../components/firebase'; 
+import { doc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore'; 
 
 export default function DonationScreen() {
     const [amount, setAmount] = useState("1");
@@ -14,7 +14,7 @@ export default function DonationScreen() {
     const [donationList, setDonationList] = useState([]);
 
     useEffect(() => {
-        fetchDonationHistory(); // Fetch donation history when component mounts
+        fetchDonationHistory(); 
     }, []);
 
     const fetchDonationHistory = async () => {
@@ -24,7 +24,7 @@ export default function DonationScreen() {
             const userDocSnapshot = await getDoc(userDocRef);
             const userData = userDocSnapshot.data();
             const existingDonationList = userData?.donations || [];
-            setDonationList(existingDonationList); // Set donation list state with existing donation data
+            setDonationList(existingDonationList); 
         } catch (error) {
             console.error('Error fetching donation history: ', error);
         }
@@ -42,32 +42,27 @@ export default function DonationScreen() {
                 date: new Date().toISOString(),
             }];
     
-            // Calculate total donation amount
             const totalAmount = updatedDonationList.reduce((total, donation) => total + parseInt(donation.amount), 0);
     
-            // Update Firestore document with new donation data
             await updateDoc(userDocRef, {
                 donations: updatedDonationList,
             });
     
-            // Check if a document exists in the "TotalDonations" collection
             const totalDonationsRef = collection(db, "TotalDonations");
             const totalDonationsQuery = await getDocs(totalDonationsRef);
             if (!totalDonationsQuery.empty) {
-                // If a document exists, update its amount field
                 const totalDonationDocRef = totalDonationsQuery.docs[0].ref;
                 const totalDonationData = totalDonationsQuery.docs[0].data();
                 const updatedTotalAmount = parseInt(totalDonationData.amount) + parseInt(amount);
                 await updateDoc(totalDonationDocRef, { amount: updatedTotalAmount });
             } else {
-                // If no document exists, create a new one
                 await addDoc(totalDonationsRef, {
                     amount: totalAmount,
                     date: new Date().toISOString(),
                 });
             }
     
-            setDonationList(updatedDonationList); // Update donation list state with new donation data
+            setDonationList(updatedDonationList); 
         } catch (error) {
             console.error('Error adding user data: ', error);
         }
@@ -84,7 +79,7 @@ export default function DonationScreen() {
                 currency: "Rupees",
                 paymentMethodTypes: ["card"],
             });
-            handleDonations(); // Call handleDonations function after successful payment
+            handleDonations(); 
             console.log(status);
         } catch (error) {
             console.error(error);
@@ -92,11 +87,11 @@ export default function DonationScreen() {
     };
 
     const navigateToFundraisers = () => {
-        navigation.navigate("FundraiserScreen"); // Navigate to FundraiserScreen
+        navigation.navigate("FundraiserScreen"); 
     };
 
     const toggleHistory = () => {
-        setShowHistory(!showHistory); // Toggle showHistory state
+        setShowHistory(!showHistory); 
     };
 
     return (
@@ -168,7 +163,7 @@ const styles = StyleSheet.create({
         padding: 20,
         marginBottom: 20,
         width: '100%',
-        maxWidth: 350, // Adjust width to match view history button
+        maxWidth: 350, 
         elevation: 5,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },

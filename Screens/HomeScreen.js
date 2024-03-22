@@ -4,14 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const [isEligible, setIsEligible] = useState(true); // Add state for eligibility
+  const [isEligible, setIsEligible] = useState(true); 
 
   const handleNavigation = (screenName) => {
     if (screenName === 'VolunteerScreen' && !isEligible) {
-      // Check eligibility, show a message, or take appropriate action
+      
       alert('You are not eligible to volunteer.');
     } else {
-      // Navigate to the selected screen
+      
       navigation.navigate(screenName);
     }
   };
@@ -70,33 +70,33 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff', // Change background color to white
-    paddingHorizontal: 20, // Add horizontal padding for better spacing
+    backgroundColor: '#ffffff', 
+    paddingHorizontal: 20, 
   },
   row: {
     flexDirection: 'row',
     marginBottom: 20,
-    justifyContent: 'center', // Center the rows horizontally
+    justifyContent: 'center', 
   },
   box: {
     width: 150,
     height: 150,
-    borderRadius: 20, // Increase border radius for smoother corners
-    marginHorizontal: 10, // Adjust horizontal margin
+    borderRadius: 20, 
+    marginHorizontal: 10, 
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#4CAF50', // Change background color to a green shade
+    backgroundColor: '#4CAF50', 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 4,
-    elevation: 5, // Add elevation for Android shadow
+    elevation: 5, 
   },
   boxText: {
-    fontSize: 16, // Decrease font size slightly
+    fontSize: 16, 
     fontWeight: 'bold',
-    color: '#ffffff', // Change text color to white
+    color: '#ffffff', 
     textAlign: 'center',
     textTransform: 'uppercase',
   },
