@@ -8,7 +8,6 @@ import { db } from '../components/firebase';
 
 export default function AmbulanceScreen() {
 
-
   const [location, setLocation] = useState(null);
   const [emergencyRequested, setEmergencyRequested] = useState(false);
   const [locationPermissionDenied, setLocationPermissionDenied] = useState(false);
@@ -150,22 +149,6 @@ export default function AmbulanceScreen() {
     <View style={styles.container}>
       <StatusBar style="auto" />
 
-      <View style={styles.contactContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Emergency Contact Name"
-          onChangeText={setContactName}
-          value={contactName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Emergency Contact Number"
-          onChangeText={setContactNumber}
-          value={contactNumber}
-          keyboardType="phone-pad"
-        />
-      </View>
-
       {location && (
         <MapView
           style={styles.map}
@@ -187,11 +170,31 @@ export default function AmbulanceScreen() {
         </MapView>
       )}
 
+      <View style={styles.contactContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Emergency Contact Name"
+          onChangeText={setContactName}
+          value={contactName}
+          placeholderTextColor="#2DAA42"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Emergency Contact Number"
+          onChangeText={setContactNumber}
+          value={contactNumber}
+          keyboardType="phone-pad"
+          placeholderTextColor="#2DAA42"
+        />
+      </View>
+
       <View style={styles.buttonContainer}>
         <Button
           title="Call Ambulance"
           onPress={handleEmergencyRequest}
           disabled={emergencyRequested || locationPermissionDenied || !locationConfirmed}
+          style={styles.button}
+          color="#2DAA42"
         />
       </View>
     </View>
@@ -202,6 +205,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    borderRadius: 25,
   },
   map: {
     flex: 1,
@@ -212,15 +216,43 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
   },
+  contactContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right:0,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#2DAA42',
     borderWidth: 1,
-    marginHorizontal: 20,
     marginBottom: 10,
     paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: '#fff',
   },
-  contactContainer: {
-    marginTop: 20,
+  button: {
+    backgroundColor: '#2DAA42',
+    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3, // Add shadow
   },
 });

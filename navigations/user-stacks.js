@@ -16,6 +16,7 @@ import TasksScreen from '../Screens/TasksScreen';
 import UserProfileScreen from '../Screens/ProfileScreens/UserProfileScreen'; 
 import SettingsScreen from '../Screens/ProfileScreens/SettingsScreen';
 import FundraiserScreen from '../Screens/FundraiserScreen';
+import BloodDonationScreen from '../Screens/BloodDonationScreen';
 
 //Screen Stacks
 
@@ -36,6 +37,7 @@ export const HomeStack = () => {
             <Stack.Screen name="ChildAdoptionForm" component={ChildAdoptionForm} />
             <Stack.Screen name="TasksScreen" component={TasksScreen} />
             <Stack.Screen name="FundraiserScreen" component={FundraiserScreen} />
+            <Stack.Screen name="BloodDonationScreen" component={BloodDonationScreen} />
 
         </Stack.Navigator>
     )
