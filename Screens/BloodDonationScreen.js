@@ -1,133 +1,61 @@
 import React, { useState } from 'react';
-import { View, Button, TextInput, Alert, Text, StyleSheet, ScrollView } from 'react-native';
-import { collection, addDoc } from 'firebase/firestore';
-import { Select } from 'native-base';
-import { db } from '../components/firebase';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-
-const healthConditionsList = [
-  'None',
-  'Anemia',
-  'Diabetes',
-  'High Blood Pressure',
-  'Heart Disease',
-  'Asthma',
-  'Cancer',
-  'Thyroid Disease',
-  'Kidney Disease',
-  'Liver Disease',
-  'HIV/AIDS',
-  'Tuberculosis',
-  'Hepatitis B',
-  'Hepatitis C',
-  'Other',
-];
+import { Select } from 'native-base';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../components/firebase'; // Ensure the Firebase setup is correct
 
 const BloodDonationScreen = () => {
   const [donor, setDonor] = useState({
     name: '',
     age: '',
-    gender: 'Select Gender',
-    bloodType: 'Select Blood Type',
+    gender: '',
+    bloodType: '',
     contactNumber: '',
     address: '',
-    healthConditions: 'Select Health Condition',
+    healthConditions: '',
     otherHealthCondition: '',
   });
 
-  const [nameError, setNameError] = useState('');
-  const [ageError, setAgeError] = useState('');
-  const [contactError, setContactError] = useState('');
-  const [addressError, setAddressError] = useState('');
+  const [errors, setErrors] = useState({
+    nameError: '',
+    ageError: '',
+    contactError: '',
+    addressError: '',
+  });
 
-  function validateName(name) {
-    return /^[a-zA-Z\s]+$/.test(name);
-  }
+  const validateName = (name) => /^[a-zA-Z\s]+$/.test(name);
+  const validateAge = (age) => /^[1-9][0-9]?$|^65$/.test(age);
+  const validateContact = (contact) => /^[0-9]{10}$/.test(contact);
 
-  function validateAge(age) {
-    const parsedAge = parseInt(age, 10);
-    return !isNaN(parsedAge) && parsedAge > 17 && parsedAge < 66;
-  }
+  const handleSubmit = async () => {
+    const nameError = validateName(donor.name) ? '' : 'Please enter a valid name (letters only).';
+    const ageError = validateAge(donor.age) ? '' : 'Please enter a valid age (18-65).';
+    const contactError = validateContact(donor.contactNumber) ? '' : 'Please enter a valid 10-digit contact number.';
+    const addressError = donor.address.trim() ? '' : 'Address is required.';
 
-  function validateContact(contact) {
-    return /^\d{10}$/.test(contact);
-  }
+    setErrors({ nameError, ageError, contactError, addressError });
 
-  function submitForm() {
-    let isValid = true;
-
-    if (!validateName(donor.name)) {
-      setNameError('Please enter a valid name (letters only).');
-      isValid = false;
-    } else {
-      setNameError('');
-    }
-
-    if (!validateAge(donor.age)) {
-      setAgeError('Please enter a valid age (18-65).');
-      isValid = false;
-    } else {
-      setAgeError('');
-    }
-
-    if (!validateContact(donor.contactNumber)) {
-      setContactError('Please enter a valid 10-digit contact number.');
-      isValid = false;
-    } else {
-      setContactError('');
-    }
-
-    if (!donor.address.trim()) {
-      setAddressError('Address is required.');
-      isValid = false;
-    } else {
-      setAddressError('');
-    }
-
-    if (donor.healthConditions === 'Select Health Condition') {
-      Alert.alert('Health Condition Error', 'Please select a health condition.');
-      isValid = false;
-    }
-
-    if (donor.healthConditions === 'Other' && !donor.otherHealthCondition.trim()) {
-      Alert.alert('Health Condition Error', 'Please specify the health condition.');
-      isValid = false;
-    }
-
-    if (isValid) {
+    if (!nameError && !ageError && !contactError && !addressError) {
       try {
-        const donorDb = collection(db, "BloodDonors");
-        addDoc(donorDb, {
-          name: donor.name,
-          age: parseInt(donor.age, 10),
-          gender: donor.gender,
-          bloodType: donor.bloodType,
-          contactNumber: donor.contactNumber,
-          address: donor.address,
-          healthConditions: donor.healthConditions === 'Other' ? donor.otherHealthCondition : donor.healthConditions,
-        });
-
-        Alert.alert('Form Submitted', 'Blood donation form submitted successfully.');
-
-        // Clear the fields after successful submission
+        await addDoc(collection(db, 'BloodDonors'), donor);
+        alert('Blood donation form submitted successfully!');
         setDonor({
           name: '',
           age: '',
-          gender: 'Select Gender',
-          bloodType: 'Select Blood Type',
+          gender: '',
+          bloodType: '',
           contactNumber: '',
           address: '',
-          healthConditions: 'Select Health Condition',
+          healthConditions: '',
           otherHealthCondition: '',
         });
       } catch (error) {
-        console.error('Error submitting form:', error);
-        Alert.alert('Error', 'An error occurred while submitting the form. Please try again.');
+        console.error('Error adding document: ', error);
+        alert('Error submitting the form. Please try again.');
       }
-    } else {
-      Alert.alert('Form Error', 'Please fix the errors in the form.');
     }
-  }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -140,10 +68,10 @@ const BloodDonationScreen = () => {
         placeholder="Enter Full Name"
         value={donor.name}
         onChangeText={(text) => setDonor({ ...donor, name: text })}
-        style={styles.textBoxes}
-        onBlur={() => setNameError(validateName(donor.name) ? '' : 'Please enter a valid name (letters only).')}
+        style={styles.input}
+        onBlur={() => setErrors({ ...errors, nameError: validateName(donor.name) ? '' : 'Please enter a valid name (letters only).' })}
       />
-      {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
+      {errors.nameError ? <Text style={styles.errorText}>{errors.nameError}</Text> : null}
 
       <Text style={styles.label}>Age</Text>
       <TextInput
@@ -151,19 +79,20 @@ const BloodDonationScreen = () => {
         onChangeText={(text) => setDonor({ ...donor, age: text })}
         placeholder="Enter Age"
         keyboardType="numeric"
-        style={styles.textBoxes}
-        onBlur={() => setAgeError(validateAge(donor.age) ? '' : 'Please enter a valid age (18-65).')}
+        style={styles.input}
+        onBlur={() => setErrors({ ...errors, ageError: validateAge(donor.age) ? '' : 'Please enter a valid age (18-65).' })}
       />
-      {ageError ? <Text style={styles.errorText}>{ageError}</Text> : null}
+      {errors.ageError ? <Text style={styles.errorText}>{errors.ageError}</Text> : null}
 
       <Text style={styles.label}>Gender</Text>
       <Select
         selectedValue={donor.gender}
-        minWidth="200"
+        minWidth="80%"
         accessibilityLabel="Choose Gender"
         placeholder="Choose Gender"
         mt={1}
         onValueChange={(itemValue) => setDonor({ ...donor, gender: itemValue })}
+        style={styles.select}
       >
         <Select.Item label="Male" value="male" />
         <Select.Item label="Female" value="female" />
@@ -173,11 +102,12 @@ const BloodDonationScreen = () => {
       <Text style={styles.label}>Blood Type</Text>
       <Select
         selectedValue={donor.bloodType}
-        minWidth="200"
+        minWidth="80%"
         accessibilityLabel="Choose Blood Type"
         placeholder="Choose Blood Type"
         mt={1}
         onValueChange={(itemValue) => setDonor({ ...donor, bloodType: itemValue })}
+        style={styles.select}
       >
         <Select.Item label="A+" value="A+" />
         <Select.Item label="A-" value="A-" />
@@ -195,52 +125,47 @@ const BloodDonationScreen = () => {
         onChangeText={(text) => setDonor({ ...donor, contactNumber: text })}
         placeholder="Enter Contact Number"
         keyboardType="numeric"
-        style={styles.textBoxes}
-        onBlur={() => setContactError(validateContact(donor.contactNumber) ? '' : 'Please enter a valid 10-digit contact number.')}
+        style={styles.input}
+        onBlur={() => setErrors({ ...errors, contactError: validateContact(donor.contactNumber) ? '' : 'Please enter a valid 10-digit contact number.' })}
       />
-      {contactError ? <Text style={styles.errorText}>{contactError}</Text> : null}
+      {errors.contactError ? <Text style={styles.errorText}>{errors.contactError}</Text> : null}
 
       <Text style={styles.label}>Address</Text>
       <TextInput
         value={donor.address}
         onChangeText={(text) => setDonor({ ...donor, address: text })}
         placeholder="Enter Address"
-        style={styles.textBoxes}
-        onBlur={() => setAddressError(donor.address.trim() ? '' : 'Address is required.')}
+        style={styles.input}
+        onBlur={() => setErrors({ ...errors, addressError: donor.address.trim() ? '' : 'Address is required.' })}
       />
-      {addressError ? <Text style={styles.errorText}>{addressError}</Text> : null}
+      {errors.addressError ? <Text style={styles.errorText}>{errors.addressError}</Text> : null}
 
       <Text style={styles.label}>Health Conditions</Text>
       <Select
         selectedValue={donor.healthConditions}
-        minWidth="200"
+        minWidth="80%"
         accessibilityLabel="Choose Health Condition"
         placeholder="Choose Health Condition"
         mt={1}
         onValueChange={(itemValue) => setDonor({ ...donor, healthConditions: itemValue })}
-        _selectedItem={{
-          bg: "teal.600",
-          endIcon: <FontAwesome name="check" size={24} color="white" />
-        }}
+        style={styles.select}
       >
-        {healthConditionsList.map((condition) => (
-          <Select.Item label={condition} value={condition} key={condition} />
+        {['None', 'Diabetes', 'Hypertension', 'Heart Disease', 'Other'].map((condition) => (
+          <Select.Item key={condition} label={condition} value={condition} />
         ))}
       </Select>
-
       {donor.healthConditions === 'Other' && (
-        <>
-          <Text style={styles.label}>Specify Health Condition</Text>
-          <TextInput
-            value={donor.otherHealthCondition}
-            onChangeText={(text) => setDonor({ ...donor, otherHealthCondition: text })}
-            placeholder="Specify Health Condition"
-            style={styles.textBoxes}
-          />
-        </>
+        <TextInput
+          value={donor.otherHealthCondition}
+          onChangeText={(text) => setDonor({ ...donor, otherHealthCondition: text })}
+          placeholder="Specify Health Condition"
+          style={styles.input}
+        />
       )}
 
-      <Button title="Submit" onPress={submitForm} />
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -253,33 +178,62 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#2DAA42',
-    marginTop: 10,
+    color: '#e74c3c',
+    marginLeft: 10,
   },
   label: {
     fontSize: 16,
     marginBottom: 4,
+    width: '80%',
+    textAlign: 'left',
   },
-  textBoxes: {
+  input: {
     width: '80%',
     height: 40,
     borderWidth: 1,
+    borderColor: '#ccc',
     paddingHorizontal: 16,
     marginVertical: 10,
     borderRadius: 10,
     fontSize: 16,
     color: 'black',
   },
+  select: {
+    width: '80%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 16,
+    marginVertical: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
   errorText: {
     color: 'red',
     fontSize: 14,
     marginBottom: 5,
+  },
+  button: {
+    backgroundColor: '#2DAA42',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 10,
+    marginTop: 20,
+    alignItems: 'center',
+    width: '80%',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
