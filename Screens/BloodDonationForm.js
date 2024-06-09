@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Select } from 'native-base';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../components/firebase'; // Ensure the Firebase setup is correct
 
-const BloodDonationScreen = () => {
+const BloodDonationForm = () => {
   const [donor, setDonor] = useState({
     name: '',
     age: '',
@@ -38,7 +38,13 @@ const BloodDonationScreen = () => {
 
     if (!nameError && !ageError && !contactError && !addressError) {
       try {
-        await addDoc(collection(db, 'BloodDonors'), donor);
+        // Add submission timestamp to donor data
+        const donorData = {
+          ...donor,
+          submissionTimestamp: serverTimestamp(),
+        };
+
+        await addDoc(collection(db, 'BloodDonors'), donorData);
         alert('Blood donation form submitted successfully!');
         setDonor({
           name: '',
@@ -63,6 +69,7 @@ const BloodDonationScreen = () => {
         <FontAwesome name="tint" size={50} color="#e74c3c" />
         <Text style={styles.title}>Blood Donation</Text>
       </View>
+
       <Text style={styles.label}>Full Name</Text>
       <TextInput
         placeholder="Enter Full Name"
@@ -96,7 +103,7 @@ const BloodDonationScreen = () => {
       >
         <Select.Item label="Male" value="male" />
         <Select.Item label="Female" value="female" />
-        <Select.Item label="Other" value="other" />
+       
       </Select>
 
       <Text style={styles.label}>Blood Type</Text>
@@ -237,4 +244,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BloodDonationScreen;
+export default BloodDonationForm;

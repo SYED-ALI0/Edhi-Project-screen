@@ -87,7 +87,7 @@ const HomeScreen = () => {
             <Text style={styles.iconText}>Edhi Homes</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.box} onPress={() => handleNavigation('BloodDonationScreen')}>
+          <TouchableOpacity style={styles.box} onPress={() => handleNavigation('BloodDonationMainScreen')}>
             <FontAwesome name="heartbeat" size={35} color="#2DAA42" />
             <Text style={styles.iconText}>Blood Donation</Text>
 
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
     height: '45%', // Extend the height of the background
-    backgroundColor: '#2DAA42', // Icon color
+    backgroundColor: '#8CB369', // Icon color
     borderBottomLeftRadius: 40, // Adjust the border radius
     borderBottomRightRadius: 40, // Adjust the border radius
     zIndex: -1, // Ensure the background does not interfere with the content
