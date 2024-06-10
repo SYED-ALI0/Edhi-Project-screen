@@ -38,7 +38,6 @@ const BloodDonationForm = () => {
 
     if (!nameError && !ageError && !contactError && !addressError) {
       try {
-        // Add submission timestamp to donor data
         const donorData = {
           ...donor,
           submissionTimestamp: serverTimestamp(),
@@ -103,7 +102,6 @@ const BloodDonationForm = () => {
       >
         <Select.Item label="Male" value="male" />
         <Select.Item label="Female" value="female" />
-       
       </Select>
 
       <Text style={styles.label}>Blood Type</Text>
