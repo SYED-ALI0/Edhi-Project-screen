@@ -3,11 +3,10 @@ import { StyleSheet, View, Button, Alert, Linking, TextInput } from 'react-nativ
 import { StatusBar } from 'expo-status-bar';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../components/firebase';
 
 export default function AmbulanceScreen() {
-
   const [location, setLocation] = useState(null);
   const [emergencyRequested, setEmergencyRequested] = useState(false);
   const [locationPermissionDenied, setLocationPermissionDenied] = useState(false);
@@ -20,17 +19,17 @@ export default function AmbulanceScreen() {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-          console.log("Location permission denied");
+          console.log('Location permission denied');
           setLocationPermissionDenied(true);
           return;
         }
 
         let currentLocation = await Location.getCurrentPositionAsync({});
         setLocation(currentLocation);
-        console.log("Location: ", currentLocation);
+        console.log('Location: ', currentLocation);
         setLocationConfirmed(true);
       } catch (error) {
-        console.error("Error while getting location permission:", error);
+        console.error('Error while getting location permission:', error);
       }
     };
 
@@ -40,13 +39,12 @@ export default function AmbulanceScreen() {
   const storeEmergencyRequest = async () => {
     try {
       const emergencyRequestsCollection = collection(db, 'emergencyRequests');
-      const timestamp = new Date(); 
       await addDoc(emergencyRequestsCollection, {
         userLocation: {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         },
-        requestTime: timestamp, 
+        requestTime: serverTimestamp(),
         emergencyContact: {
           name: contactName,
           number: contactNumber,
@@ -61,17 +59,14 @@ export default function AmbulanceScreen() {
   const handleEmergencyRequest = () => {
     if (!isValidName(contactName)) {
       Alert.alert(
-        "Invalid Name",
-        "Please enter a valid name without special characters or numbers."
+        'Invalid Name',
+        'Please enter a valid name without special characters or numbers.'
       );
       return;
     }
 
     if (!isValidPhoneNumber(contactNumber)) {
-      Alert.alert(
-        "Invalid Number",
-        "Please enter a valid phone number."
-      );
+      Alert.alert('Invalid Number', 'Please enter a valid phone number.');
       return;
     }
 
@@ -81,56 +76,65 @@ export default function AmbulanceScreen() {
       if (!emergencyRequested) {
         if (locationConfirmed) {
           Alert.alert(
-            "Emergency Assistance",
-            "Are you sure you want to request an ambulance?",
+            'Emergency Assistance',
+            'Are you sure you want to request an ambulance?',
             [
               {
-                text: "Cancel",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel"
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
               },
               {
-                text: "Request",
+                text: 'Request',
                 onPress: async () => {
                   setEmergencyRequested(true);
-                  await storeEmergencyRequest(); 
+                  await storeEmergencyRequest();
+                  setContactName(''); // Clear the name field
+                  setContactNumber(''); // Clear the number field
                   Alert.alert(
-                    "Ambulance Request Confirmed",
-                    "An ambulance has been requested. Assistance will arrive soon."
+                    'Ambulance Request Confirmed',
+                    'An ambulance has been requested. Assistance will arrive soon.',
+                    [
+                      {
+                        text: 'OK',
+                        onPress: () => {
+                          // Reset the fields after alert confirmation
+                          setContactName('');
+                          setContactNumber('');
+                        },
+                      },
+                    ]
                   );
-                }
-              }
+                },
+              },
             ]
           );
         } else {
           Alert.alert(
-            "Location Confirmation Required",
-            "Please wait while your location is being confirmed."
+            'Location Confirmation Required',
+            'Please wait while your location is being confirmed.'
           );
         }
       } else {
-        Alert.alert(
-          "Emergency Assistance",
-          "An ambulance has already been requested."
-        );
+        Alert.alert('Emergency Assistance', 'An ambulance has already been requested.');
       }
     }
   };
 
   const showLocationAccessDeniedAlert = () => {
     Alert.alert(
-      "Location Access Required",
-      "To use this feature, please enable location access in your device settings.",
+      'Location Access Required',
+      'To use this feature, please enable location access in your device settings.',
       [
         {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
         },
         {
-          text: "Enable",
-          onPress: () => Linking.openSettings()
-        }
+          text: 'Enable',
+          onPress: () => Linking.openSettings(),
+        },
       ]
     );
   };
@@ -140,8 +144,7 @@ export default function AmbulanceScreen() {
   };
 
   const isValidPhoneNumber = (number) => {
-    
-    const pakistanPhoneNumberPattern = /^(0|\+92)?[0-9]{10}$/;
+    const pakistanPhoneNumberPattern = /^(0|\+92)?[0-9]{11}$/;
     return pakistanPhoneNumberPattern.test(number);
   };
 
@@ -220,7 +223,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    right:0,
+    right: 0,
     paddingVertical: 15,
     paddingHorizontal: 20,
     backgroundColor: '#ffffff',
@@ -253,6 +256,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 3, // Add shadow
+    elevation: 3,
   },
 });

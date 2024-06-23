@@ -208,7 +208,6 @@ const ChildAdoptionForm = () => {
       <Select selectedValue={adoption.gender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Gender"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, gender: itemValue })}>
           <Select.Item label="Male" value="female" />
           <Select.Item label="Female" value="male" />
-          <Select.Item label="Other" value="other" />
         </Select>
 
         <Text style={styles.label}>Marital Status</Text>

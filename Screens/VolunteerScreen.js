@@ -1,30 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Button, TextInput, Alert, Text, ScrollView } from 'react-native';
-import { collection, addDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../components/firebase';
-import {Select} from "native-base"
-import { doc } from 'firebase/firestore';
-
-import { Picker } from '@react-native-picker/picker';
+import { Select } from 'native-base';
 
 const cities = [
-  'Select City', // Set a placeholder
+  'Select City',
   'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad',
   'Multan', 'Gujranwala', 'Quetta', 'Peshawar', 'Sialkot', 'Abbottabad'
-  // Add more cities as needed
 ];
 
 const VolunteerScreen = ({ navigation }) => {
-
-  const [email, setEmail]  = useState(auth.currentUser?.email);
+  const [email, setEmail] = useState(auth.currentUser?.email);
   const [user, setUser] = useState({
     userName: '',
     userAge: '',
     userEmail: email,
-    // userEmail: '',
-    userGender: 'Select Gender', // Set an initial value
+    userGender: 'Select Gender',
     userContact: '',
-    userLocation: 'Select City', // Set an initial value
+    userLocation: 'Select City',
     userAvailability: '',
   });
 
@@ -35,17 +29,14 @@ const VolunteerScreen = ({ navigation }) => {
   const [contactError, setContactError] = useState('');
   const [locationError, setLocationError] = useState('');
   const [availabilityError, setAvailabilityError] = useState('');
-
+  const [submitDisabled, setSubmitDisabled] = useState(false);
 
   async function checkExistingUser(email, contact) {
     const volunteerRef = collection(db, 'volunteers');
-    
     const emailQuery = query(volunteerRef, where('email', '==', email));
     const emailSnapshot = await getDocs(emailQuery);
-    
     const contactQuery = query(volunteerRef, where('contact', '==', contact));
     const contactSnapshot = await getDocs(contactQuery);
-
     return {
       emailExists: !emailSnapshot.empty,
       contactExists: !contactSnapshot.empty,
@@ -53,7 +44,6 @@ const VolunteerScreen = ({ navigation }) => {
   }
 
   async function submit() {
-    // Basic input validation
     let isValid = true;
 
     if (!validateName(user.userName)) {
@@ -122,18 +112,21 @@ const VolunteerScreen = ({ navigation }) => {
         return;
       }
 
+      setSubmitDisabled(true);
       const userDb = collection(db, "volunteers");
-      addDoc(userDb, {
-        userName: user.userName,
-        age: user.userAge,
-        email: user.userEmail,
-        gender: user.userGender,
-        contact: user.userContact,
-        location: user.userLocation,
-        availability: user.userAvailability,
-      }).then(() => {
+      try {
+        const timestamp = serverTimestamp();
+        await addDoc(userDb, {
+          userName: user.userName,
+          age: user.userAge,
+          email: user.userEmail,
+          gender: user.userGender,
+          contact: user.userContact,
+          location: user.userLocation,
+          availability: user.userAvailability,
+          createdAt: timestamp,
+        });
         Alert.alert('Data submitted successfully!');
-        // Clear the fields after successful submission
         setUser({
           userName: '',
           userAge: '',
@@ -143,9 +136,12 @@ const VolunteerScreen = ({ navigation }) => {
           userLocation: 'Select City',
           userAvailability: '',
         });
-      }).catch((error) => {
+      } catch (error) {
+        console.error('Error submitting data:', error);
         Alert.alert('Error submitting data');
-      });
+      } finally {
+        setSubmitDisabled(false);
+      }
     } else {
       Alert.alert('Please provide valid information.');
     }
@@ -161,7 +157,6 @@ const VolunteerScreen = ({ navigation }) => {
   }
 
   function validateEmail(email) {
-    // Simple email validation
     return /\S+@\S+\.\S+/.test(email);
   }
 
@@ -212,12 +207,14 @@ const VolunteerScreen = ({ navigation }) => {
 
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Gender</Text>
-        
-
-        <Select selectedValue={user.userGender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Select Gender"  mt={1} onValueChange={itemValue =>  setUser({ ...user, userGender: itemValue })}>
+        <Select
+          selectedValue={user.userGender}
+          minWidth="200"
+          placeholder="Select Gender"
+          onValueChange={itemValue => setUser({ ...user, userGender: itemValue })}
+        >
           <Select.Item label="Male" value="Male" />
-          <Select.Item label="Female" value="Female"  />
-          <Select.Item label="Other" value="Other" />
+          <Select.Item label="Female" value="Female" />
         </Select>
         {genderError ? <Text style={styles.errorText}>{genderError}</Text> : null}
       </View>
@@ -237,10 +234,14 @@ const VolunteerScreen = ({ navigation }) => {
 
       <View style={styles.fieldContainer}>
         <Text style={styles.label}>Location</Text>
-        
-        <Select selectedValue={user.userLocation} minWidth="200" accessibilityLabel="Choose Service" placeholder="Select Location"  mt={1} onValueChange={itemValue =>  setUser({ ...user, userLocation: itemValue })}>
-        {cities.map((city, index) => (
-            <Picker.Item key={index} label={city} value={city} />
+        <Select
+          selectedValue={user.userLocation}
+          minWidth="200"
+          placeholder="Select Location"
+          onValueChange={itemValue => setUser({ ...user, userLocation: itemValue })}
+        >
+          {cities.map((city, index) => (
+            <Select.Item key={index} label={city} value={city} />
           ))}
         </Select>
         {locationError ? <Text style={styles.errorText}>{locationError}</Text> : null}
@@ -258,15 +259,9 @@ const VolunteerScreen = ({ navigation }) => {
         {availabilityError ? <Text style={styles.errorText}>{availabilityError}</Text> : null}
       </View>
 
-      <Button title='Submit' onPress={submit} />
+      <Button title='Submit' onPress={submit} disabled={submitDisabled} />
 
-      {/* Add "Tasks" button */}
-      <View style={styles.tasksButtonContainer}>
-        <Button
-          title='Tasks'
-          onPress={() => navigation.navigate('TasksScreen')}
-        />
-      </View>
+      {/* Add additional UI components or styling as needed */}
     </ScrollView>
   );
 };
@@ -274,37 +269,28 @@ const VolunteerScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 20,
+    alignItems: 'center',
+    padding: 20,
   },
   fieldContainer: {
-    width: '80%',
-    marginBottom: 20,
+    marginBottom: 10,
+    width: '100%',
   },
   label: {
-    fontSize: 16,
     marginBottom: 5,
-    color: 'black',
   },
   textBoxes: {
-    width: '100%',
-    height: 40,
+    borderColor: 'gray',
     borderWidth: 1,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    fontSize: 16,
-    color: 'black',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
   errorText: {
     color: 'red',
-    fontSize: 14,
+    fontSize: 12,
     marginTop: 5,
-  },
-  tasksButtonContainer: {
-    width: '80%',
-    marginTop: 20,
   },
 });
 

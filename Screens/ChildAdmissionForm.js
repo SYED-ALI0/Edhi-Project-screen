@@ -38,7 +38,7 @@ const ChildAdmissionForm = () => {
   }
 
   function validateContact(contact) {
-    return /^\d{10}$/.test(contact);
+    return /^\d{11}$/.test(contact);
   }
 
   function submitForm() {
@@ -66,7 +66,7 @@ const ChildAdmissionForm = () => {
     }
 
     if (!validateContact(child.contactNumber)) {
-      setContactError('Please enter a valid 10-digit contact number.');
+      setContactError('Please enter a valid 11-digit contact number.');
       isValid = false;
     } else {
       setContactError('');
@@ -149,7 +149,6 @@ const ChildAdmissionForm = () => {
       <Select selectedValue={child.gender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Gender"  mt={1} onValueChange={itemValue =>  setChild({ ...child, gender: itemValue })}>
           <Select.Item label="Male" value="male" />
           <Select.Item label="Female" value="female" />
-          <Select.Item label="Other" value="other" />
         </Select>
 
       <Text style={styles.label}>Parent's Full Name</Text>
@@ -169,7 +168,7 @@ const ChildAdmissionForm = () => {
         placeholder='Enter Contact Number'
         keyboardType='numeric'
         style={styles.textBoxes}
-        onBlur={() => setContactError(validateContact(child.contactNumber) ? '' : 'Please enter a valid 10-digit contact number.')}
+        onBlur={() => setContactError(validateContact(child.contactNumber) ? '' : 'Please enter a valid 11-digit contact number.')}
       />
       {contactError ? <Text style={styles.errorText}>{contactError}</Text> : null}
 

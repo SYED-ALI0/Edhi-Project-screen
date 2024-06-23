@@ -21,11 +21,11 @@ const BloodDonationRequestScreen = () => {
   });
 
   const validateName = (name) => /^[a-zA-Z\s]+$/.test(name);
-  const validateContact = (contact) => /^[0-9]{10}$/.test(contact);
+  const validateContact = (contact) => /^[0-9]{11}$/.test(contact);
 
   const handleSubmit = async () => {
     const nameError = validateName(requestInfo.patientName) ? '' : 'Please enter a valid name (letters only).';
-    const contactError = validateContact(requestInfo.contactNumber) ? '' : 'Please enter a valid 10-digit contact number.';
+    const contactError = validateContact(requestInfo.contactNumber) ? '' : 'Please enter a valid 11-digit contact number.';
     const addressError = requestInfo.location.trim() ? '' : 'Location is required.';
 
     setErrors({ nameError, contactError, addressError });

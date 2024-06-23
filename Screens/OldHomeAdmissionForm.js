@@ -42,7 +42,7 @@ const OldHomeAdmissionForm = () => {
   }
 
   function validateContact(contact) {
-    return /^\d{10}$/.test(contact);
+    return /^\d{11}$/.test(contact);
   }
 
   function validateOccupation(occupation) {
@@ -59,7 +59,7 @@ const OldHomeAdmissionForm = () => {
   }
 
   function validateEmergencyContact(emergencyContact) {
-    return /^\d{10}$/.test(emergencyContact);
+    return /^\d{11}$/.test(emergencyContact);
   }
 
   function validateAllergiesDetails(allergiesDetails) {
@@ -86,7 +86,7 @@ const OldHomeAdmissionForm = () => {
     }
 
     if (!validateContact(admission.contactNumber)) {
-      setContactError('Please enter a valid 10-digit contact number.');
+      setContactError('Please enter a valid 11-digit contact number.');
       isValid = false;
     } else {
       setContactError('');
@@ -121,7 +121,7 @@ const OldHomeAdmissionForm = () => {
     }
 
     if (!validateEmergencyContact(admission.emergencyContact)) {
-      setEmergencyContactError('Please enter a valid 10-digit emergency contact number.');
+      setEmergencyContactError('Please enter a valid 11-digit emergency contact number.');
       isValid = false;
     } else {
       setEmergencyContactError('');
@@ -208,7 +208,6 @@ const OldHomeAdmissionForm = () => {
       <Select selectedValue={admission.applicantGender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Select Gender"  mt={1} onValueChange={itemValue =>  setAdmission({ ...admission, applicantGender: itemValue })}>
           <Select.Item label="Male" value="Male" />
           <Select.Item label="Female" value="Female"  />
-          <Select.Item label="Other" value="Other" />
         </Select>
 
       <Text style={styles.label}>Marital Status</Text>
@@ -248,7 +247,7 @@ const OldHomeAdmissionForm = () => {
         placeholder="Enter Contact Number"
         keyboardType="phone-pad"
         style={styles.textBoxes}
-        onBlur={() => setContactError(validateContact(admission.contactNumber) ? '' : 'Please enter a valid 10-digit contact number.')}
+        onBlur={() => setContactError(validateContact(admission.contactNumber) ? '' : 'Please enter a valid 11-digit contact number.')}
       />
       {contactError ? <Text style={styles.errorText}>{contactError}</Text> : null}
 
@@ -287,7 +286,7 @@ const OldHomeAdmissionForm = () => {
         placeholder="Enter Emergency Contact Number"
         keyboardType="phone-pad"
         style={styles.textBoxes}
-        onBlur={() => setEmergencyContactError(validateEmergencyContact(admission.emergencyContact) ? '' : 'Please enter a valid 10-digit emergency contact number.')}
+        onBlur={() => setEmergencyContactError(validateEmergencyContact(admission.emergencyContact) ? '' : 'Please enter a valid 11-digit emergency contact number.')}
       />
       {emergencyContactError ? <Text style={styles.errorText}>{emergencyContactError}</Text> : null}
 
