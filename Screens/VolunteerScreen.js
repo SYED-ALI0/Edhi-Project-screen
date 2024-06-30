@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Button, TextInput, Alert, Text, ScrollView } from 'react-native';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../components/firebase';
 import { Select } from 'native-base';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
 const cities = [
   'Select City',
@@ -31,6 +32,8 @@ const VolunteerScreen = ({ navigation }) => {
   const [availabilityError, setAvailabilityError] = useState('');
   const [submitDisabled, setSubmitDisabled] = useState(false);
 
+  const nav = useNavigation(); // Use useNavigation
+
   async function checkExistingUser(email, contact) {
     const volunteerRef = collection(db, 'volunteers');
     const emailQuery = query(volunteerRef, where('email', '==', email));
@@ -44,6 +47,7 @@ const VolunteerScreen = ({ navigation }) => {
   }
 
   async function submit() {
+    console.log('Submit button pressed');
     let isValid = true;
 
     if (!validateName(user.userName)) {
@@ -100,6 +104,7 @@ const VolunteerScreen = ({ navigation }) => {
     }
 
     if (isValid) {
+      console.log('Form is valid, checking for existing user...');
       const { emailExists, contactExists } = await checkExistingUser(user.userEmail, user.userContact);
 
       if (emailExists) {
@@ -143,6 +148,7 @@ const VolunteerScreen = ({ navigation }) => {
         setSubmitDisabled(false);
       }
     } else {
+      console.log('Form is not valid');
       Alert.alert('Please provide valid information.');
     }
   }
@@ -252,16 +258,30 @@ const VolunteerScreen = ({ navigation }) => {
         <TextInput
           value={user.userAvailability}
           onChangeText={(text) => setUser({ ...user, userAvailability: text })}
-          placeholder="Enter the time you are available at"
+          placeholder="Enter your availability"
           style={styles.textBoxes}
-          onBlur={() => setAvailabilityError(user.userAvailability.trim() === '' ? 'Please enter your availability.' : '')}
+          keyboardType="default"
+          onBlur={() => setAvailabilityError(user.userAvailability.trim() ? '' : 'Please enter your availability.')}
         />
         {availabilityError ? <Text style={styles.errorText}>{availabilityError}</Text> : null}
       </View>
 
-      <Button title='Submit' onPress={submit} disabled={submitDisabled} />
+      <View style={styles.buttonContainer}>
+  <Button
+    title="Submit"
+    onPress={submit}
+    disabled={submitDisabled}
+    color="#007bff"
+  />
+</View>
+<View style={styles.buttonContainer}>
+  <Button
+    title="Tasks"
+    onPress={() => navigation.navigate('TasksScreen')}
+    color="#007bff"
+  />
+</View>
 
-      {/* Add additional UI components or styling as needed */}
     </ScrollView>
   );
 };
@@ -270,27 +290,39 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    padding: 16,
   },
   fieldContainer: {
-    marginBottom: 10,
-    width: '100%',
+    marginBottom: 20,
   },
   label: {
     marginBottom: 5,
+    fontWeight: 'bold',
   },
   textBoxes: {
+    height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 5,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    borderRadius: 5,
   },
   errorText: {
     color: 'red',
-    fontSize: 12,
     marginTop: 5,
+  },
+  buttonContainer: {
+    marginVertical: 10, // Adds vertical margin to each button container
+  },
+  button: {
+    backgroundColor: '#007bff',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 20, // Increased margin to create more space between buttons
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { View, Button, TextInput, Alert, Text, StyleSheet, ScrollView } from 'react-native';
-import { collection, addDoc } from 'firebase/firestore';
-import {Select} from "native-base"
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { Select } from "native-base";
 import { db } from '../components/firebase';
-// import { Picker } from '@react-native-picker/picker';
 
 const cities = [
   'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad',
@@ -19,6 +18,7 @@ const ChildAdmissionForm = () => {
     contactNumber: '',
     address: '',
     healthConditions: '',
+    edhiHomeLocation: 'Select Location'
   });
 
   const [nameError, setNameError] = useState('');
@@ -27,6 +27,7 @@ const ChildAdmissionForm = () => {
   const [contactError, setContactError] = useState('');
   const [addressError, setAddressError] = useState('');
   const [healthConditionsError, setHealthConditionsError] = useState('');
+  const [edhiHomeLocationError, setEdhiHomeLocationError] = useState('');
 
   function validateName(name) {
     return /^[a-zA-Z\s]+$/.test(name);
@@ -41,7 +42,11 @@ const ChildAdmissionForm = () => {
     return /^\d{11}$/.test(contact);
   }
 
-  function submitForm() {
+  function validateEdhiHomeLocation(location) {
+    return location !== 'Select Location';
+  }
+
+  async function submitForm() {
     let isValid = true;
 
     if (!validateName(child.childName)) {
@@ -86,10 +91,17 @@ const ChildAdmissionForm = () => {
       setHealthConditionsError('');
     }
 
+    if (!validateEdhiHomeLocation(child.edhiHomeLocation)) {
+      setEdhiHomeLocationError('Please select a valid Edhi Home Location.');
+      isValid = false;
+    } else {
+      setEdhiHomeLocationError('');
+    }
+
     if (isValid) {
       try {
         const childDb = collection(db, "ChildAdmissionForm");
-        addDoc(childDb, {
+        await addDoc(childDb, {
           childName: child.childName,
           age: parseInt(child.age, 10),
           gender: child.gender,
@@ -97,6 +109,8 @@ const ChildAdmissionForm = () => {
           contactNumber: child.contactNumber,
           address: child.address,
           healthConditions: child.healthConditions,
+          edhiHomeLocation: child.edhiHomeLocation,
+          timestamp: Timestamp.fromDate(new Date()) // Add timestamp field
         });
 
         Alert.alert('Form Submitted', 'Child admission form submitted successfully.');
@@ -110,6 +124,7 @@ const ChildAdmissionForm = () => {
           contactNumber: '',
           address: '',
           healthConditions: '',
+          edhiHomeLocation: 'Select Location'
         });
       } catch (error) {
         console.error('Error submitting form:', error);
@@ -144,12 +159,10 @@ const ChildAdmissionForm = () => {
       {ageError ? <Text style={styles.errorText}>{ageError}</Text> : null}
 
       <Text style={styles.label}>Gender</Text>
-    
-
       <Select selectedValue={child.gender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Gender"  mt={1} onValueChange={itemValue =>  setChild({ ...child, gender: itemValue })}>
           <Select.Item label="Male" value="male" />
           <Select.Item label="Female" value="female" />
-        </Select>
+      </Select>
 
       <Text style={styles.label}>Parent's Full Name</Text>
       <TextInput
@@ -192,6 +205,29 @@ const ChildAdmissionForm = () => {
       />
       {healthConditionsError ? <Text style={styles.errorText}>{healthConditionsError}</Text> : null}
 
+      <Text style={styles.label}>Edhi Home Location</Text>
+      <Select
+        selectedValue={child.edhiHomeLocation}
+        minWidth="200"
+        accessibilityLabel="Choose Location"
+        placeholder="Select Location"
+        mt={1}
+        onValueChange={(itemValue) => setChild({ ...child, edhiHomeLocation: itemValue })}
+      >
+        <Select.Item label="Karachi" value="Karachi" />
+        <Select.Item label="Lahore" value="Lahore" />
+        <Select.Item label="Islamabad" value="Islamabad" />
+        <Select.Item label="Rawalpindi" value="Rawalpindi" />
+        <Select.Item label="Faisalabad" value="Faisalabad" />
+        <Select.Item label="Multan" value="Multan" />
+        <Select.Item label="Gujranwala" value="Gujranwala" />
+        <Select.Item label="Quetta" value="Quetta" />
+        <Select.Item label="Peshawar" value="Peshawar" />
+        <Select.Item label="Sialkot" value="Sialkot" />
+        <Select.Item label="Abbottabad" value="Abbottabad" />
+      </Select>
+      {edhiHomeLocationError ? <Text style={styles.errorText}>{edhiHomeLocationError}</Text> : null}
+
       <Button title='Submit' onPress={submitForm} />
     </ScrollView>
   );
@@ -207,7 +243,6 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 4,
-    
   },
   textBoxes: {
     width: '80%',

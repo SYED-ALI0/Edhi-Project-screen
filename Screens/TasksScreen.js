@@ -100,7 +100,7 @@ const TasksScreen = ({ route }) => {
         ListEmptyComponent={<Text>No tasks assigned yet.</Text>}
       />
       {/* Conditional rendering of submit button */}
-      {!isUserExists && (
+      {/* {!isUserExists && (
         <TouchableOpacity
           style={styles.submitButton}
           onPress={handleSubmitTask}
@@ -108,7 +108,7 @@ const TasksScreen = ({ route }) => {
         >
           <Text style={styles.submitButtonText}>Assign Task</Text>
         </TouchableOpacity>
-      )}
+      )} */}
     </View>
   );
 };

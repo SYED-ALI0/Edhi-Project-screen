@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { View, Button, TextInput, Alert, Text, StyleSheet, ScrollView } from 'react-native';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, Timestamp } from 'firebase/firestore'; // Import Timestamp
 import { db } from '../components/firebase';
-import {Select} from "native-base"
-
-//  import { Picker } from '@react-native-picker/picker';
+import { Select } from 'native-base';
 
 const ChildAdoptionForm = () => {
   const [adoption, setAdoption] = useState({
@@ -151,6 +149,7 @@ const ChildAdoptionForm = () => {
         childrenDetails: adoption.childrenDetails,
         criminalRecord: adoption.criminalRecord,
         criminalRecordDetails: adoption.criminalRecordDetails,
+        timestamp: Timestamp.fromDate(new Date()), // Add timestamp field
       })
         .then(() => {
           Alert.alert('Form Submitted', 'Child adoption form submitted successfully.');
@@ -203,24 +202,32 @@ const ChildAdoptionForm = () => {
       {ageError ? <Text style={styles.errorText}>{ageError}</Text> : null}
 
       <Text style={styles.label}>Gender</Text>
-    
+      <Select
+        selectedValue={adoption.gender}
+        minWidth="200"
+        accessibilityLabel="Choose Service"
+        placeholder="Choose Gender"
+        mt={1}
+        onValueChange={(itemValue) => setAdoption({ ...adoption, gender: itemValue })}
+      >
+        <Select.Item label="Male" value="Male" />
+        <Select.Item label="Female" value="Female" />
+      </Select>
 
-      <Select selectedValue={adoption.gender} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Gender"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, gender: itemValue })}>
-          <Select.Item label="Male" value="female" />
-          <Select.Item label="Female" value="male" />
-        </Select>
-
-        <Text style={styles.label}>Marital Status</Text>
-    
-
-      <Select selectedValue={adoption.maritalStatus} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Marital Status"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, maritalStatus: itemValue })}>
-          <Select.Item label="Single" value="Single" />
-          <Select.Item label="Married" value="Marred" />
-          <Select.Item label="Divorced" value="Divorced" />
-          <Select.Item label="Widowed" value="Widowed" />
-        </Select>
-
-      
+      <Text style={styles.label}>Marital Status</Text>
+      <Select
+        selectedValue={adoption.maritalStatus}
+        minWidth="200"
+        accessibilityLabel="Choose Service"
+        placeholder="Choose Marital Status"
+        mt={1}
+        onValueChange={(itemValue) => setAdoption({ ...adoption, maritalStatus: itemValue })}
+      >
+        <Select.Item label="Single" value="Single" />
+        <Select.Item label="Married" value="Married" />
+        <Select.Item label="Divorced" value="Divorced" />
+        <Select.Item label="Widowed" value="Widowed" />
+      </Select>
 
       <Text style={styles.label}>Occupation</Text>
       <TextInput
@@ -232,11 +239,11 @@ const ChildAdoptionForm = () => {
       />
       {occupationError ? <Text style={styles.errorText}>{occupationError}</Text> : null}
 
-      <Text style={styles.label}>Annual Income</Text>
+      <Text style={styles.label}>Monthly Income</Text>
       <TextInput
         value={adoption.income}
         onChangeText={(text) => setAdoption({ ...adoption, income: text })}
-        placeholder="Enter Annual Income"
+        placeholder="Enter Monthly Income"
         keyboardType="numeric"
         style={styles.textBoxes}
         onBlur={() => setIncomeError(validateIncome(adoption.income) ? '' : 'Please enter a valid income (numeric characters only).')}
@@ -275,13 +282,19 @@ const ChildAdoptionForm = () => {
       {reasonError ? <Text style={styles.errorText}>{reasonError}</Text> : null}
 
       <Text style={styles.label}>Do you have other children?</Text>
-   
-      <Select selectedValue={adoption.otherChildren} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Option"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, otherChildren: itemValue })}>
-          <Select.Item label="Yes" value="Yes" />
-          <Select.Item label="No" value="No" />
-        </Select>
+      <Select
+        selectedValue={adoption.otherChildren}
+        minWidth="200"
+        accessibilityLabel="Choose Service"
+        placeholder="Choose Option"
+        mt={1}
+        onValueChange={(itemValue) => setAdoption({ ...adoption, otherChildren: itemValue })}
+      >
+        <Select.Item label="Yes" value="Yes" />
+        <Select.Item label="No" value="No" />
+      </Select>
 
-      {adoption.otherChildren === "Yes" && (
+      {adoption.otherChildren === 'Yes' && (
         <>
           <Text style={styles.label}>Details of Other Children</Text>
           <TextInput
@@ -289,22 +302,28 @@ const ChildAdoptionForm = () => {
             onChangeText={(text) => setAdoption({ ...adoption, childrenDetails: text })}
             placeholder="Enter Details"
             style={styles.textBoxes}
-            onBlur={() => setChildrenDetailsError(validateChildrenDetails(adoption.childrenDetails) ? '' : 'Additional validation logic if needed.')}
+            onBlur={() =>
+              setChildrenDetailsError(validateChildrenDetails(adoption.childrenDetails) ? '' : 'Additional validation logic if needed.')
+            }
           />
           {childrenDetailsError ? <Text style={styles.errorText}>{childrenDetailsError}</Text> : null}
         </>
       )}
 
       <Text style={styles.label}>Do you have any criminal record?</Text>
-      
+      <Select
+        selectedValue={adoption.criminalRecord}
+        minWidth="200"
+        accessibilityLabel="Choose Service"
+        placeholder="Choose Option"
+        mt={1}
+        onValueChange={(itemValue) => setAdoption({ ...adoption, criminalRecord: itemValue })}
+      >
+        <Select.Item label="Yes" value="Yes" />
+        <Select.Item label="No" value="No" />
+      </Select>
 
-      <Select selectedValue={adoption.criminalRecord} minWidth="200" accessibilityLabel="Choose Service" placeholder="Choose Option"  mt={1} onValueChange={itemValue =>  setAdoption({ ...adoption, criminalRecord: itemValue })}>
-          <Select.Item label="Yes" value="Yes" />
-          <Select.Item label="No" value="No" />
-        </Select>
-
-
-      {adoption.criminalRecord === "Yes" && (
+      {adoption.criminalRecord === 'Yes' && (
         <>
           <Text style={styles.label}>Details of Criminal Record</Text>
           <TextInput
@@ -312,13 +331,17 @@ const ChildAdoptionForm = () => {
             onChangeText={(text) => setAdoption({ ...adoption, criminalRecordDetails: text })}
             placeholder="Enter Details"
             style={styles.textBoxes}
-            onBlur={() => setCriminalRecordDetailsError(validateCriminalRecordDetails(adoption.criminalRecordDetails) ? '' : 'Additional validation logic if needed.')}
+            onBlur={() =>
+              setCriminalRecordDetailsError(validateCriminalRecordDetails(adoption.criminalRecordDetails)
+                ? ''
+                : 'Additional validation logic if needed.')
+            }
           />
           {criminalRecordDetailsError ? <Text style={styles.errorText}>{criminalRecordDetailsError}</Text> : null}
         </>
       )}
 
-      <Button title='Submit' onPress={submitForm} />
+      <Button title="Submit" onPress={submitForm} />
     </ScrollView>
   );
 };
