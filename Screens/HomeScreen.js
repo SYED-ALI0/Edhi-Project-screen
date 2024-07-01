@@ -12,13 +12,18 @@ const HomeScreen = () => {
   const flatListRef = useRef(null);
 
   const images = [
+    require('../images/Edhi_Logo.png'),
     require('../images/old1.jpeg'),
+    require('../images/userhome3.jpeg'),
+    require('../images/userhome2.jpeg'),
+
+    require('../images/userhome6.jpeg'),
+    require('../images/userhome7.jpeg'),
     require('../images/old1.jpeg'),
+    require('../images/userhome3.jpeg'),
+
     require('../images/old1.jpeg'),
-    require('../images/old1.jpeg'),
-    require('../images/old1.jpeg'),
-    require('../images/old1.jpeg'),
-    require('../images/old1.jpeg'),
+    // require('../images/old1.jpeg'),
   ];
 
   useEffect(() => {
@@ -44,27 +49,29 @@ const HomeScreen = () => {
       <View style={styles.topBackground} />
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <FlatList
-          ref={flatListRef}
-          data={images}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.imageContainer}>
-              <Image source={item} style={styles.image} />
-            </View>
-          )}
-          initialScrollIndex={currentIndex}
-          getItemLayout={(data, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
-          pagingEnabled
-        />
+        <View style={styles.imageContainer}>
+          <FlatList
+            ref={flatListRef}
+            data={images}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.imageWrapper}>
+                <Image source={item} style={styles.image} />
+              </View>
+            )}
+            initialScrollIndex={currentIndex}
+            getItemLayout={(data, index) => ({
+              length: width,
+              offset: width * index,
+              index,
+            })}
+            pagingEnabled
+          />
+        </View>
 
-        <View style={styles.row}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
           <TouchableOpacity style={styles.box} onPress={() => handleNavigation('AmbulanceScreen')}>
             <FontAwesome name="ambulance" size={35} color="#2DAA42" />
             <Text style={styles.iconText}>Ambulance</Text>
@@ -79,9 +86,7 @@ const HomeScreen = () => {
             <FontAwesome name="money" size={35} color="#2DAA42" />
             <Text style={styles.iconText}>Donation</Text>
           </TouchableOpacity>
-        </View>
 
-        <View style={styles.row}>
           <TouchableOpacity style={styles.box} onPress={() => handleNavigation('EdhiHomes')}>
             <FontAwesome name="home" size={35} color="#2DAA42" />
             <Text style={styles.iconText}>Edhi Homes</Text>
@@ -90,17 +95,8 @@ const HomeScreen = () => {
           <TouchableOpacity style={styles.box} onPress={() => handleNavigation('BloodDonationMainScreen')}>
             <FontAwesome name="heartbeat" size={35} color="#2DAA42" />
             <Text style={styles.iconText}>Blood Donation</Text>
-
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.box} onPress={() => handleNavigation('YetAnotherScreen')}>
-            <FontAwesome name="file-text" size={34} color="#2DAA42" />
-            <Text style={styles.iconText}>News</Text>
-            <Text style={styles.iconText}>Feed</Text>
-
-
-          </TouchableOpacity>
-        </View>
+        </ScrollView>
       </ScrollView>
     </View>
   );
@@ -109,65 +105,70 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#f0f0f5', // Subtle background color
+    backgroundColor: '#f0f0f5', // Subtle background color
   },
   topBackground: {
     position: 'absolute',
     top: 0,
     width: '100%',
-    height: '45%', // Extend the height of the background
-    backgroundColor: '#8CB369', // Icon color
-    borderBottomLeftRadius: 40, // Adjust the border radius
-    borderBottomRightRadius: 40, // Adjust the border radius
-    zIndex: -1, // Ensure the background does not interfere with the content
+    height: '45%',
+    backgroundColor: '#ffffff', // Changed to white
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    zIndex: -1,
+    shadowColor: '#2DAA42',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    elevation: 10, // Added shading for depth
   },
   scrollContainer: {
-    flexGrow: 0.8,
-    justifyContent: 'center',
+    flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 55,
+    borderRadius: 50, // Move content up
   },
-  row: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    justifyContent: 'space-between',
-    marginTop: 10,
-    width: '100%',
+  imageContainer: {
+    height: height * 0.25, // Reduced height to move up
+    // marginBottom: 20, // Space between image and buttons
+  },
+  imageWrapper: {
+    width: width,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingRight: 39,
+
+  },
+  image: {
+    width: width * 0.85,
+    height: width * 0.6,
+    borderRadius: 25,
+  },
+  horizontalScroll: {
+    marginTop: 20,
   },
   box: {
-    flex: 1,
-    aspectRatio: 1,
+    width: 110, // Fixed width for uniformity
+    height: 200, // Increased height
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffff',
-    shadowColor: '#000',
+    shadowColor: '#2DAA42',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
+    shadowOpacity: 0.6, // Increased shadow opacity
+    shadowRadius: 5, // Increased shadow radius
+    elevation: 15,
+    marginTop: 135,
     marginHorizontal: 10,
     padding: 10,
   },
   iconText: {
     color: '#2DAA42',
-    // marginTop: 5,
+    marginTop: 5,
     textAlign: 'center',
     fontSize: RFPercentage(1.5),
-  },
-  imageContainer: {
-    width: width, // Make the container width same as screen width to center the image
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: -10,
-    // marginRight: -10, // Adjust to move the container to the left
-    marginTop: -25, // Adjust to move the container up
-  },
-  image: {
-    width: width * 0.85, // Make the image responsive to screen width
-    height: width * 0.4, // Maintain a 2:1 aspect ratio
-    borderRadius: 25,
   },
 });
 

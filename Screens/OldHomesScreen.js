@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, ScrollView, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const OldHomesScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
+        <LinearGradient colors={['#ffffff', '#f0f0f0']} style={styles.headerContainer}>
           <Text style={styles.header}>Edhi Foundation Old Homes</Text>
-        </View>
+        </LinearGradient>
 
         <ScrollView horizontal style={styles.imageScrollContainer}>
           <Image source={require('../images/old1.jpeg')} style={styles.image} />
@@ -15,8 +16,6 @@ const OldHomesScreen = ({ navigation }) => {
           <Image source={require('../images/old3.jpeg')} style={styles.image} />
           <Image source={require('../images/old4.jpeg')} style={styles.image} />
           <Image source={require('../images/old5.jpeg')} style={styles.image} />
-          {/* <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} /> */}
           {/* Add more images as needed */}
         </ScrollView>
 
@@ -33,7 +32,6 @@ const OldHomesScreen = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Fixed Buttons Container at the bottom */}
       <View style={styles.fixedButtonsContainer}>
         <Button
           title="Admission Form"
@@ -41,7 +39,6 @@ const OldHomesScreen = ({ navigation }) => {
           color="#3498db"
           style={styles.button}
         />
-        {/* "Volunteer Form" button removed */}
       </View>
     </View>
   );
@@ -56,14 +53,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    backgroundColor: '#3498db',
-    paddingVertical: 20,
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
+    textAlign: 'center',
   },
   imageScrollContainer: {
     paddingTop: 10,

@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, ScrollView, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ChildCareScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
+        <LinearGradient colors={['#ffffff', '#f0f0f0']} style={styles.headerContainer}>
           <Text style={styles.header}>Edhi Foundation Child Care Services</Text>
-        </View>
+        </LinearGradient>
 
         <ScrollView horizontal style={styles.imageScrollContainer}>
           <Image source={require('../images/child1.jpeg')} style={styles.image} />
@@ -15,8 +16,6 @@ const ChildCareScreen = ({ navigation }) => {
           <Image source={require('../images/child3.jpg')} style={styles.image} />
           <Image source={require('../images/child4.jpeg')} style={styles.image} />
           <Image source={require('../images/child5.jpeg')} style={styles.image} />
-          {/* <Image source={require('../images/image1.jpeg')} style={styles.image} />
-          <Image source={require('../images/image1.jpeg')} style={styles.image} /> */}
           {/* Add more images as needed */}
         </ScrollView>
 
@@ -33,7 +32,6 @@ const ChildCareScreen = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Fixed Buttons Container at the bottom */}
       <View style={styles.fixedButtonsContainer}>
         <Button
           title="Admission Form"
@@ -62,14 +60,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    backgroundColor: '#3498db',
-    paddingVertical: 20,
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333',
+    textAlign: 'center',
   },
   imageScrollContainer: {
     paddingTop: 10,
@@ -84,7 +90,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
-    paddingBottom: 0, // Adjusted paddingBottom to remove extra space
+    paddingBottom: 0,
   },
   paragraph: {
     fontSize: 16,

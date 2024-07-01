@@ -3,12 +3,11 @@ import { View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet } from 'r
 import { collection, query, getDocs, onSnapshot, doc, updateDoc, Timestamp, arrayUnion, increment } from 'firebase/firestore';
 import { db } from '../components/firebase';
 import { auth } from '../components/firebase';
-
-import { useStripeCheckout } from "./hooks/useStripeCheckout";
+import { useStripeCheckout } from './hooks/useStripeCheckout';
 
 const FundraiserScreen = () => {
   const [fundraisers, setFundraisers] = useState([]);
-  const [donationAmount, setDonationAmount] = useState("");
+  const [donationAmount, setDonationAmount] = useState('');
   const [selectedFundraiserId, setSelectedFundraiserId] = useState(null);
   const { initiatePayment } = useStripeCheckout();
 
@@ -16,12 +15,16 @@ const FundraiserScreen = () => {
     const fetchFundraisers = async () => {
       const fundraisersCollection = collection(db, 'fundraisers');
       const fundraisersSnapshot = await getDocs(fundraisersCollection);
-      const fetchedFundraisers = fundraisersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setFundraisers(fetchedFundraisers.reverse());
+      const fetchedFundraisers = fundraisersSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+      setFundraisers(fetchedFundraisers);
 
       const unsubscribe = onSnapshot(fundraisersCollection, (snapshot) => {
-        const updatedFundraisers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setFundraisers(updatedFundraisers.reverse());
+        const updatedFundraisers = snapshot.docs
+          .map(doc => ({ id: doc.id, ...doc.data() }))
+          .sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+        setFundraisers(updatedFundraisers);
       });
 
       return () => unsubscribe();
@@ -37,42 +40,41 @@ const FundraiserScreen = () => {
   const handleConfirmDonation = async (fundraiser) => {
     try {
       if (!donationAmount || parseInt(donationAmount) < 50) {
-        alert("The minimum donation amount is Rs.50");
+        alert('The minimum donation amount is Rs.50');
         return;
       }
-  
+
       const status = await initiatePayment({
-        userId: "123",
-        userName: "Ali",
+        userId: '123',
+        userName: 'Ali',
         amount: parseInt(donationAmount),
-        currency: "USD",
-        paymentMethodTypes: ["card"],
+        currency: 'USD',
+        paymentMethodTypes: ['card'],
       });
-  
+
       const donationData = {
         title: fundraiser.title,
         amount: parseInt(donationAmount),
         date: Timestamp.now(),
       };
-  
+
       const userID = auth.currentUser?.email;
-      const userDocRef = doc(db, "users", userID);
+      const userDocRef = doc(db, 'users', userID);
       await updateDoc(userDocRef, {
-        donations: arrayUnion(donationData)
+        donations: arrayUnion(donationData),
       });
-  
+
       // Update collected amount in the fundraiser document
       const fundraiserDocRef = doc(db, 'fundraisers', fundraiser.id);
       await updateDoc(fundraiserDocRef, {
-        collectedAmount: increment(parseInt(donationAmount))
+        collectedAmount: increment(parseInt(donationAmount)),
       });
-  
+
       console.log(status);
     } catch (error) {
       console.error(error);
     }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -82,9 +84,9 @@ const FundraiserScreen = () => {
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Title: {item.title}</Text>
-            <Text style={styles.cardAmount}>Amount: {item.amount}</Text>
+            <Text style={styles.cardAmount}>Target Amount: {item.amount}</Text>
             <Text style={styles.cardCollectedAmount}>Collected Amount: {item.collectedAmount}</Text>
-            {(selectedFundraiserId === item.id) ? (
+            {selectedFundraiserId === item.id ? (
               <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Enter Donation Amount"
@@ -95,24 +97,26 @@ const FundraiserScreen = () => {
                 />
                 <TouchableOpacity
                   style={styles.confirmButton}
-                  onPress={() => handleConfirmDonation(item)}>
+                  onPress={() => handleConfirmDonation(item)}
+                >
                   <Text style={styles.confirmButtonText}>Confirm Donation</Text>
                 </TouchableOpacity>
               </View>
             ) : (
               <TouchableOpacity
                 style={styles.donateButton}
-                onPress={() => handleDonate(item.id)}>
+                onPress={() => handleDonate(item.id)}
+              >
                 <Text style={styles.donateButtonText}>Donate</Text>
               </TouchableOpacity>
             )}
           </View>
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

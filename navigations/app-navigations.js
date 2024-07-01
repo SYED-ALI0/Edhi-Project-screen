@@ -21,7 +21,7 @@ const AppNavigation = () => {
     return (
       <AppThemeProvider>
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <ActivityIndicator size="large" color="orange" />
+          <ActivityIndicator size="large" color="green" />
         </View>
       </AppThemeProvider>
     );
@@ -50,7 +50,7 @@ const AppNavigation = () => {
         headerTitleAlign: 'center',
         headerTitle: 'Edhi Foundation',
         
-        tabBarActiveTintColor: "#ffc400",
+        tabBarActiveTintColor: "#2DAA42",
         tabBarShowLabel: false,
         tabBarInactiveTintColor: "gray",
         tabBarActiveBackgroundColor: "#FFFFFF",

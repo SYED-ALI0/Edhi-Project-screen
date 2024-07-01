@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#e74c3c',
+    // color: '#e74c3c',
     marginBottom: 20,
   },
   card: {

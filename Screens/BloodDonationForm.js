@@ -65,7 +65,7 @@ const BloodDonationForm = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <FontAwesome name="tint" size={50} color="#e74c3c" />
+        {/* <FontAwesome name="tint" size={50} color="#e74c3c" /> */}
         <Text style={styles.title}>Blood Donation</Text>
       </View>
 
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#e74c3c',
+    // color: '#e74c3c',
     marginLeft: 10,
   },
   label: {

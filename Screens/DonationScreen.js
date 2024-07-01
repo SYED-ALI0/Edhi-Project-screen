@@ -96,7 +96,7 @@ export default function DonationScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.heading}>Donate To Edhi Foundation</Text>
+            {/* <Text style={styles.heading}>Donate To Edhi Foundation</Text> */}
 
             <View style={styles.card}>
                 <Text style={styles.label}>Enter Donation Amount</Text>
