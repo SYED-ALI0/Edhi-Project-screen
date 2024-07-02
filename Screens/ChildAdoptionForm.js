@@ -341,7 +341,7 @@ const ChildAdoptionForm = () => {
         </>
       )}
 
-      <Button title="Submit" onPress={submitForm} />
+      <Button title="Submit" onPress={submitForm} color="#2DAA42"/>
     </ScrollView>
   );
 };

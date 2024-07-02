@@ -16,14 +16,11 @@ const HomeScreen = () => {
     require('../images/old1.jpeg'),
     require('../images/userhome3.jpeg'),
     require('../images/userhome2.jpeg'),
-
-    require('../images/userhome6.jpeg'),
+    // require('../images/userhome6.jpeg'),
     require('../images/userhome7.jpeg'),
     require('../images/old1.jpeg'),
     require('../images/userhome3.jpeg'),
-
     require('../images/old1.jpeg'),
-    // require('../images/old1.jpeg'),
   ];
 
   useEffect(() => {
@@ -71,6 +68,8 @@ const HomeScreen = () => {
           />
         </View>
 
+        <Text style={styles.headerText}>Edhi Services</Text>
+
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
           <TouchableOpacity style={styles.box} onPress={() => handleNavigation('AmbulanceScreen')}>
             <FontAwesome name="ambulance" size={35} color="#2DAA42" />
@@ -105,14 +104,14 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f5', // Subtle background color
+    backgroundColor: '#f0f0f5',
   },
   topBackground: {
     position: 'absolute',
     top: 0,
     width: '100%',
     height: '45%',
-    backgroundColor: '#ffffff', // Changed to white
+    backgroundColor: '#ffffff',
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
     zIndex: -1,
@@ -120,47 +119,53 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.6,
     shadowRadius: 10,
-    elevation: 10, // Added shading for depth
+    elevation: 10,
   },
   scrollContainer: {
     flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 55,
-    borderRadius: 50, // Move content up
   },
   imageContainer: {
-    height: height * 0.25, // Reduced height to move up
-    // marginBottom: 20, // Space between image and buttons
+    height: height * 0.25,
+    marginRight: 20,
   },
   imageWrapper: {
     width: width,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingRight: 39,
-
   },
   image: {
     width: width * 0.85,
     height: width * 0.6,
     borderRadius: 25,
   },
+  headerText: {
+    fontSize: RFPercentage(3),
+    fontWeight: '600',
+    // color: '#2DAA42',
+    marginTop: 120,
+    marginBottom: 10,
+    textAlign: 'left',
+    alignSelf: 'flex-start',
+    marginLeft: 22,
+  },
   horizontalScroll: {
     marginTop: 20,
   },
   box: {
-    width: 110, // Fixed width for uniformity
-    height: 200, // Increased height
+    width: 110,
+    height: 200,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffff',
     shadowColor: '#2DAA42',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.6, // Increased shadow opacity
-    shadowRadius: 5, // Increased shadow radius
+    shadowOpacity: 0.6,
+    shadowRadius: 5,
     elevation: 15,
-    marginTop: 135,
     marginHorizontal: 10,
     padding: 10,
   },

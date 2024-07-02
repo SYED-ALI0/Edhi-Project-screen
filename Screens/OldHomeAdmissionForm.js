@@ -342,7 +342,7 @@ const OldHomeAdmissionForm = () => {
       </Select>
       {edhiHomeLocationError ? <Text style={styles.errorText}>{edhiHomeLocationError}</Text> : null}
 
-      <Button title="Submit" onPress={submitForm} />
+      <Button title="Submit" onPress={submitForm} color="#2DAA42"/>
     </ScrollView>
   );
 };

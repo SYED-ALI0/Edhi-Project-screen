@@ -271,14 +271,14 @@ const VolunteerScreen = ({ navigation }) => {
     title="Submit"
     onPress={submit}
     disabled={submitDisabled}
-    color="#007bff"
+    color="#2DAA42"
   />
 </View>
 <View style={styles.buttonContainer}>
   <Button
     title="Tasks"
     onPress={() => navigation.navigate('TasksScreen')}
-    color="#007bff"
+    color="#2DAA42"
   />
 </View>
 

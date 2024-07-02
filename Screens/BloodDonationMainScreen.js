@@ -9,7 +9,7 @@ const BloodDonationMainScreen = ({ navigation }) => {
         <Text style={styles.buttonText}>Register as a Blood Donor</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BloodDonationRequestList')}>
-        <Text style={styles.buttonText}>Blood Donation Requests</Text>
+        <Text style={styles.buttonText}>View Blood Donation Requests</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BloodDonationRequestForm')}>
         <Text style={styles.buttonText}>Make a Blood Donation Request</Text>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#2DAA42',
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '700',
     fontFamily: 'sans-serif-light', // Softer font
   },
 });

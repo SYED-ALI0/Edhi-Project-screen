@@ -228,7 +228,7 @@ const ChildAdmissionForm = () => {
       </Select>
       {edhiHomeLocationError ? <Text style={styles.errorText}>{edhiHomeLocationError}</Text> : null}
 
-      <Button title='Submit' onPress={submitForm} />
+      <Button title='Submit' onPress={submitForm} color="#2DAA42" style={{width: 80}}/>
     </ScrollView>
   );
 };
