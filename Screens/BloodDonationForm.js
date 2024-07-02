@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 import { Select } from 'native-base';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../components/firebase'; // Ensure the Firebase setup is correct
+import { db, auth } from '../components/firebase'; // Ensure the Firebase setup is correct
 
 const BloodDonationForm = () => {
+  const [userEmail, setUserEmail] = useState(auth.currentUser?.email);
   const [donor, setDonor] = useState({
     name: '',
     age: '',
@@ -13,6 +13,7 @@ const BloodDonationForm = () => {
     bloodType: '',
     contactNumber: '',
     address: '',
+    email: userEmail,
     healthConditions: '',
     otherHealthCondition: '',
   });
@@ -22,21 +23,24 @@ const BloodDonationForm = () => {
     ageError: '',
     contactError: '',
     addressError: '',
+    emailError: '',
   });
 
   const validateName = (name) => /^[a-zA-Z\s]+$/.test(name);
   const validateAge = (age) => /^[1-9][0-9]?$|^65$/.test(age);
   const validateContact = (contact) => /^[0-9]{11}$/.test(contact);
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSubmit = async () => {
     const nameError = validateName(donor.name) ? '' : 'Please enter a valid name (letters only).';
     const ageError = validateAge(donor.age) ? '' : 'Please enter a valid age (18-65).';
     const contactError = validateContact(donor.contactNumber) ? '' : 'Please enter a valid 11-digit contact number.';
     const addressError = donor.address.trim() ? '' : 'Address is required.';
+    const emailError = validateEmail(donor.email) ? '' : 'Please enter a valid email address.';
 
-    setErrors({ nameError, ageError, contactError, addressError });
+    setErrors({ nameError, ageError, contactError, addressError, emailError });
 
-    if (!nameError && !ageError && !contactError && !addressError) {
+    if (!nameError && !ageError && !contactError && !addressError && !emailError) {
       try {
         const donorData = {
           ...donor,
@@ -52,6 +56,7 @@ const BloodDonationForm = () => {
           bloodType: '',
           contactNumber: '',
           address: '',
+          email: userEmail,
           healthConditions: '',
           otherHealthCondition: '',
         });
@@ -65,7 +70,6 @@ const BloodDonationForm = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        {/* <FontAwesome name="tint" size={50} color="#e74c3c" /> */}
         <Text style={styles.title}>Blood Donation</Text>
       </View>
 
@@ -131,7 +135,7 @@ const BloodDonationForm = () => {
         placeholder="Enter Contact Number"
         keyboardType="numeric"
         style={styles.input}
-        onBlur={() => setErrors({ ...errors, contactError: validateContact(donor.contactNumber) ? '' : 'Please enter a valid 10-digit contact number.' })}
+        onBlur={() => setErrors({ ...errors, contactError: validateContact(donor.contactNumber) ? '' : 'Please enter a valid 11-digit contact number.' })}
       />
       {errors.contactError ? <Text style={styles.errorText}>{errors.contactError}</Text> : null}
 
@@ -144,6 +148,17 @@ const BloodDonationForm = () => {
         onBlur={() => setErrors({ ...errors, addressError: donor.address.trim() ? '' : 'Address is required.' })}
       />
       {errors.addressError ? <Text style={styles.errorText}>{errors.addressError}</Text> : null}
+
+      <Text style={styles.label}>Email</Text>
+      <TextInput
+        value={donor.email}
+        onChangeText={(text) => setDonor({ ...donor, email: text })}
+        placeholder="Enter Email"
+        style={styles.input}
+        onBlur={() => setErrors({ ...errors, emailError: validateEmail(donor.email) ? '' : 'Please enter a valid email address.' })}
+        editable={false} // Disable email input
+      />
+      {errors.emailError ? <Text style={styles.errorText}>{errors.emailError}</Text> : null}
 
       <Text style={styles.label}>Health Conditions</Text>
       <Select
@@ -190,7 +205,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    // color: '#e74c3c',
     marginLeft: 10,
   },
   label: {

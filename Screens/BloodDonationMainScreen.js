@@ -14,6 +14,9 @@ const BloodDonationMainScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BloodDonationRequestForm')}>
         <Text style={styles.buttonText}>Make a Blood Donation Request</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ViewBloodDonationRequest')}>
+        <Text style={styles.buttonText}>View My Requests</Text>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Select } from 'native-base';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../components/firebase'; // Ensure the Firebase setup is correct
+import { db, auth } from '../components/firebase'; // Ensure the Firebase setup is correct
 
 const BloodDonationRequestScreen = () => {
+  const [userEmail, setUserEmail] = useState(auth.currentUser?.email);
   const [requestInfo, setRequestInfo] = useState({
     patientName: '',
     bloodType: '',
     contactNumber: '',
     hospitalName: '',
     location: '',
+    email: userEmail,
     additionalInfo: '',
   });
 
@@ -18,19 +20,22 @@ const BloodDonationRequestScreen = () => {
     nameError: '',
     contactError: '',
     addressError: '',
+    emailError: '',
   });
 
   const validateName = (name) => /^[a-zA-Z\s]+$/.test(name);
   const validateContact = (contact) => /^[0-9]{11}$/.test(contact);
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleSubmit = async () => {
     const nameError = validateName(requestInfo.patientName) ? '' : 'Please enter a valid name (letters only).';
     const contactError = validateContact(requestInfo.contactNumber) ? '' : 'Please enter a valid 11-digit contact number.';
     const addressError = requestInfo.location.trim() ? '' : 'Location is required.';
+    const emailError = validateEmail(requestInfo.email) ? '' : 'Please enter a valid email address.';
 
-    setErrors({ nameError, contactError, addressError });
+    setErrors({ nameError, contactError, addressError, emailError });
 
-    if (!nameError && !contactError && !addressError) {
+    if (!nameError && !contactError && !addressError && !emailError) {
       try {
         // Store form data in Firestore
         await addDoc(collection(db, 'BloodDonationRequests'), {
@@ -44,6 +49,7 @@ const BloodDonationRequestScreen = () => {
           contactNumber: '',
           hospitalName: '',
           location: '',
+          email: '',
           additionalInfo: '',
         });
 
@@ -72,6 +78,7 @@ const BloodDonationRequestScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Make a Blood Donation Request</Text>
+      
       <Text style={styles.fieldTitle}>Patient Name</Text>
       <TextInput
         style={styles.input}
@@ -127,6 +134,17 @@ const BloodDonationRequestScreen = () => {
         onChangeText={(text) => setRequestInfo({ ...requestInfo, location: text })}
       />
       {errors.addressError ? <Text style={styles.errorText}>{errors.addressError}</Text> : null}
+
+      <Text style={styles.fieldTitle}>Email</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={requestInfo.email}
+        editable={false}
+        onChangeText={(text) => setRequestInfo({ ...requestInfo, email: text })}
+        onBlur={() => setErrors({ ...errors, emailError: validateEmail(requestInfo.email) ? '' : 'Please enter a valid email address.' })}
+      />
+      {errors.emailError ? <Text style={styles.errorText}>{errors.emailError}</Text> : null}
 
       <Text style={styles.fieldTitle}>Additional Information (if any)</Text>
       <TextInput

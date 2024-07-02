@@ -20,6 +20,7 @@ import BloodDonationForm from '../Screens/BloodDonationForm';
 import BloodDonationMainScreen from '../Screens/BloodDonationMainScreen';
 import BloodDonationRequestForm from '../Screens/BloodDonationRequestForm';
 import BloodDonationRequestList from '../Screens/BloodDonationRequestList';
+import ViewBloodDonationRequest from '../Screens/ViewBloodRequestScreen';
 
 //Screen Stacks
 
@@ -44,6 +45,7 @@ export const HomeStack = () => {
             <Stack.Screen name="BloodDonationMainScreen" component={BloodDonationMainScreen} />
             <Stack.Screen name="BloodDonationRequestForm" component={BloodDonationRequestForm} />
             <Stack.Screen name="BloodDonationRequestList" component={BloodDonationRequestList} />
+            <Stack.Screen name='ViewBloodDonationRequest' component={ViewBloodDonationRequest} />
 
         </Stack.Navigator>
     )
