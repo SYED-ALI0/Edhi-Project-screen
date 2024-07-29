@@ -3,9 +3,10 @@ import React, { useState } from "react";
 
 export function useStripeCheckout() {
     const [success, setSuccess] = useState(false);
-    const stripe = useStripe("pk_test_51OIYqSSJnqSYq2ZEPOEfmQl9nA4Z72k9ogMLcI9khC7f5rdozegiwH6STubHvFYUaTF2vikgok6SBopvh6SyKeKm00MijgQAGq");
+    const stripe = useStripe("pk_test_51MH3xKEf1gVnSEtdnA6u94KsVdS5P9GioPEA6vOUW61mtT023fJXVSwSUoQeybLZ8SUA7EZOGlN7NZcc4Eyqjd9r00GAs32lag");
 
-    const backendUrl = "https://edhi-backend.cyclic.app";
+
+    const backendUrl = "https://dev-backend-production.up.railway.app";
 
     const fetchClientSecret = async (data) => {
         try {

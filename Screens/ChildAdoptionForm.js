@@ -53,17 +53,14 @@ const ChildAdoptionForm = () => {
   }
 
   function validateChildrenDetails(childrenDetails) {
-    // Additional validation logic if needed
     return true;
   }
 
   function validateCriminalRecordDetails(criminalRecordDetails) {
-    // Additional validation logic if needed
     return true;
   }
 
   function submitForm() {
-    // Basic input validation
     let isValid = true;
 
     if (!validateName(adoption.adopterName)) {

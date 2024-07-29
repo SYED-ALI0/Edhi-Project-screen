@@ -48,7 +48,6 @@ const ChildAdmissionForm = () => {
 
   async function submitForm() {
     let isValid = true;
-
     if (!validateName(child.childName)) {
       setNameError('Please enter a valid name (letters only).');
       isValid = false;
@@ -115,7 +114,6 @@ const ChildAdmissionForm = () => {
 
         Alert.alert('Form Submitted', 'Child admission form submitted successfully.');
 
-        // Clear the fields after successful submission
         setChild({
           childName: '',
           age: '',

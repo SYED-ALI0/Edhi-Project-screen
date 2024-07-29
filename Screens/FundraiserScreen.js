@@ -64,7 +64,6 @@ const FundraiserScreen = () => {
         donations: arrayUnion(donationData),
       });
 
-      // Update collected amount in the fundraiser document
       const fundraiserDocRef = doc(db, 'fundraisers', fundraiser.id);
       await updateDoc(fundraiserDocRef, {
         collectedAmount: increment(parseInt(donationAmount)),
